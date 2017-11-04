@@ -1,4 +1,4 @@
-This Terraform template builds Azure Compute resources for Mesos DC/OS Clusters using Azure Container Service.
+This Terraform template builds Azure Compute resources for a Mesos DC/OS Clusters using Azure Container Service.
 
 *************************
 Step 1: Install Terraform
