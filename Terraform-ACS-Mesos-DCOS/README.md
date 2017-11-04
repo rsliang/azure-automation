@@ -171,6 +171,9 @@ resource "azurerm_container_service" "test" {
 }
 
 
+
+
+
 Step 2: Build Azure infrastructure - apply Terraform template
 *************************************************************
 (1) Initialize Terraform
