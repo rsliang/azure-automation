@@ -15,6 +15,7 @@ Step (3): Verify Terraform install
 $ C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
 
 Output:
+
 C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
 Usage: terraform [--version] [--help] <command> [args]
 The available commands for execution are listed below.
@@ -66,6 +67,7 @@ Run `az login` to obtain Azure CLI Auth Tokens
 $ az login
 
 Output:
+
 C:\MyWork\TE\Clients\Amperity\TestLabs\Terraform\azurerm_container_service>az login
 To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code EJGA3L6Q7 to authenticate.
 
@@ -96,6 +98,7 @@ Setp (5): Query account for subscription ID and tenant ID:
 $ az account show --query "{subscriptionId:id, tenantId:tenantId}"
 
 Output:
+
 C:\TestLabs\Terraform\azurerm_container_service>az account show --query "{subscriptionId:id, tenantId:tenantId}"
 {
   "subscriptionId": "c27{...}c1c",
@@ -107,6 +110,7 @@ Step (6): Set the subscription for the session
 $ az account set --subscription="${SUBSCRIPTION_ID}"
 
 Output:
+
 C:\opt\terraform_0.10.7_windows_amd64>az account set --subscription="c27{...}c1c"
 
 Step (7): Create separate credential for Terraform
@@ -114,6 +118,7 @@ Step (7): Create separate credential for Terraform
 $ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
 
 Output:
+
 C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/c27{...}c1c"
 {
   "appId": "{...}b82",
@@ -195,6 +200,7 @@ Step (1): Initialize Terraform
 $ terraform init
 
 Output:
+
 C:\TestLabs\Terraform\azurerm_container_service>terraform init
 
 Initializing provider plugins...
@@ -228,6 +234,7 @@ This step compares the requested resources to the state information saved by Ter
 $ terraform plan
 
 Output:
+
 C:\TestLabs\Terraform\azurerm_container_service>terraform plan
 Refreshing Terraform state in-memory prior to plan...
 The refreshed state will be used to calculate this plan, but will not be
@@ -284,6 +291,7 @@ Step (3): Build the infrastructure in Azure, apply the template in Terraform
 $ terraform apply
 
 Output:
+
 C:\TestLabs\Terraform\azurerm_container_service>terraform apply
 azurerm_resource_group.test: Creating...
   location: "" => "eastus"
