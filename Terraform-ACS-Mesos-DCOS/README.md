@@ -1,11 +1,11 @@
-Install Terraform
-
-1) Download Terraform package
+Step 1: Install Terraform
+*************************
+(1) Download Terraform package
 https://www.terraform.io/downloads.html
 
-2) Add Terraform executable to the Path
+(2) Add Terraform executable to the Path
 
-3) Verify Terraform install
+(3) Verify Terraform install
 $ C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
 
 Output:
@@ -50,7 +50,7 @@ less common or more advanced commands. If you're just getting
 started with Terraform, stick with the common commands. For the
 other commands, please read the help and docs before usage.
 
-4) Set up Terraform access to Azure
+(4) Set up Terraform access to Azure
 To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.
 
 Azure env setup: provider.azurerm
@@ -61,29 +61,29 @@ Output:
 C:\MyWork\TE\Clients\Amperity\TestLabs\Terraform\azurerm_container_service>az login
 To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code EJGA3L6Q7 to authenticate.
 
-4.1) Go to browser and navigate to: https://aka.ms/devicelogin
-4.2) Azure authentication with Device Login code: EJGA3L6Q7
+    4.1) Go to browser and navigate to: https://aka.ms/devicelogin
+    4.2) Azure authentication with Device Login code: EJGA3L6Q7
  
-4.3) Click <Continue> > to select azure account to login
-4.4) Azure CLI - Azure authenticated
+    4.3) Click <Continue> > to select azure account to login
+    4.4) Azure CLI - Azure authenticated
  
-4.5) Go back to CLI - Completed authentication with Azure
-[
-  {
-    "cloudName": "AzureCloud",
-    "id": "c27{...}c1c",
-    "isDefault": true,
-    "name": "Visual Studio Enterprise",
-    "state": "Enabled",
-    "tenantId": "bf5{...}9d3",
-    "user": {
-      "name": "rsliang@yahoo.com",
-      "type": "user"
-    }
-  }
-]
+    4.5) Go back to CLI - Completed authentication with Azure
+    [
+      {
+        "cloudName": "AzureCloud",
+        "id": "c27{...}c1c",
+        "isDefault": true,
+        "name": "Visual Studio Enterprise",
+        "state": "Enabled",
+        "tenantId": "bf5{...}9d3",
+        "user": {
+          "name": "rsliang@yahoo.com",
+          "type": "user"
+        }
+      }
+    ]
 
-5) Query account for subscription ID and tenant ID:
+(5) Query account for subscription ID and tenant ID:
 $ az account show --query "{subscriptionId:id, tenantId:tenantId}"
 Output:
 C:\TestLabs\Terraform\azurerm_container_service>az account show --query "{subscriptionId:id, tenantId:tenantId}"
@@ -92,12 +92,12 @@ C:\TestLabs\Terraform\azurerm_container_service>az account show --query "{subscr
   "tenantId": "bf5{...}9d3"
 }
 
-6) Set the subscription for the session
+(6) Set the subscription for the session
 $ az account set --subscription="${SUBSCRIPTION_ID}"
 Output:
 C:\opt\terraform_0.10.7_windows_amd64>az account set --subscription="c27{...}c1c"
 
-7) Create separate credential for Terraform
+(7) Create separate credential for Terraform
 $ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
 Output:
 C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/c27{...}c1c"
@@ -109,8 +109,7 @@ C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role=
   "tenant": "bf5{...}9d3"
 }
 
-
-8) Set environment variables (optional)
+(8) Set environment variables (optional)
 After you create and configure an Azure AD service principal, you need to let Terraform know the tenant ID, subscription ID, client ID, and client secret to use. You can do it by embedding those values in your Terraform scripts, as described in Create basic infrastructure by using Terraform. Alternately, you can set the following environment variables (and thus avoid accidentally checking in or sharing your credentials):+
 ARM_SUBSCRIPTION_ID
 ARM_CLIENT_ID
@@ -124,7 +123,6 @@ export ARM_SUBSCRIPTION_ID=your_subscription_id
 export ARM_CLIENT_ID=your_appId
 export ARM_CLIENT_SECRET=your_password
 export ARM_TENANT_ID=your_tenant_id
-
 
 Build ACS with Meso DCOS container orchestrator using Terraform:
 Creates an Azure Container Service Instance
@@ -172,8 +170,10 @@ resource "azurerm_container_service" "test" {
   }
 }
 
-Initialize Terraform
-1) Initialize Terraform
+
+Step 2: Build Azure infrastructure - apply Terraform template
+*************************************************************
+(1) Initialize Terraform
 $ terraform init
 
 Output:
@@ -203,7 +203,8 @@ If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 
-2) Terraform review and validate the template. 
+
+(2) Terraform review and validate the template. 
 This step compares the requested resources to the state information saved by Terraform and then outputs the planned execution. Resources are not created in Azure.
 
 $ terraform plan
@@ -259,7 +260,8 @@ Note: You didn't specify an "-out" parameter to save this plan, so Terraform
 can't guarantee that exactly these actions will be performed if
 "terraform apply" is subsequently run.
 
-3) build the infrastructure in Azure, apply the template in Terraform
+
+(3) Build the infrastructure in Azure, apply the template in Terraform
 $ terraform apply
 
 Output:
