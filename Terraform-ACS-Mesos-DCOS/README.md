@@ -1,3 +1,4 @@
+*************************
 Step 1: Install Terraform
 *************************
 (1) Download Terraform package
@@ -170,12 +171,11 @@ resource "azurerm_container_service" "test" {
   }
 }
 
-************************************************************
 
 
-
-Step 2: Build Azure infrastructure - apply Terraform template
-*************************************************************
+****************************************************************
+Step 2: Build Azure infrastructure - applying Terraform template
+****************************************************************
 (1) Initialize Terraform
 $ terraform init
 
