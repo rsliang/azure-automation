@@ -6,6 +6,7 @@ This is a Terraform usage example for Mesos DCOS orchestration.  It uses the "az
 I. Install Terraform
 *************************
 Step (1): Download Terraform package
+
 https://www.terraform.io/downloads.html
 
 Step (2): Add Terraform executable to the Path
@@ -17,47 +18,73 @@ $ C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
 Output:
 
 C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
+
 Usage: terraform [--version] [--help] <command> [args]
+
 The available commands for execution are listed below.
-The most common, useful commands are shown first, followed by
-less common or more advanced commands. If you're just getting
-started with Terraform, stick with the common commands. For the
-other commands, please read the help and docs before usage.
+
+The most common, useful commands are shown first, followed by less common or more advanced commands. If you're just getting
+started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
+
 Common commands:
+
     apply              Builds or changes infrastructure
+    
     console            Interactive console for Terraform interpolations
+    
     destroy            Destroy Terraform-managed infrastructure
+    
     env                Workspace management
+    
     fmt                Rewrites config files to canonical format
+    
     get                Download and install modules for the configuration
+    
     graph              Create a visual graph of Terraform resources
+    
     import             Import existing infrastructure into Terraform
+    
     init               Initialize a Terraform working directory
+    
     output             Read an output from a state file
+    
     plan               Generate and show an execution plan
+    
     providers          Prints a tree of the providers used in the configuration
+    
     push               Upload this Terraform module to Atlas to run
+    
     refresh            Update local state file against real resources
+    
     show               Inspect Terraform state or plan
+    
     taint              Manually mark a resource for recreation
+    
     untaint            Manually unmark a resource as tainted
+    
     validate           Validates the Terraform files
+    
     version            Prints the Terraform version
+    
     workspace          Workspace management
 
 All other commands:
+
     debug              Debug output management (experimental)
+    
     force-unlock       Manually unlock the terraform state
+    
     state              Advanced state management
+    
 Usage: terraform [--version] [--help] <command> [args]
 
 The available commands for execution are listed below.
-The most common, useful commands are shown first, followed by
-less common or more advanced commands. If you're just getting
-started with Terraform, stick with the common commands. For the
-other commands, please read the help and docs before usage.
+
+The most common, useful commands are shown first, followed by less common or more advanced commands. If you're just getting
+started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
 
 Step (4): Set up Terraform access to Azure
+
 To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.
 
 Azure env setup: provider.azurerm
@@ -69,6 +96,7 @@ $ az login
 Output:
 
 C:\MyWork\TE\Clients\Amperity\TestLabs\Terraform\azurerm_container_service>az login
+
 To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code EJGA3L6Q7 to authenticate.
 
     4.1) Go to browser and navigate to: https://aka.ms/devicelogin
@@ -120,6 +148,7 @@ $ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSC
 Output:
 
 C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/c27{...}c1c"
+
 {
   "appId": "{...}b82",
   "displayName": "azure-cli-{...}",
@@ -131,21 +160,33 @@ C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role=
 Step (8): Set environment variables (optional)
 
 After you create and configure an Azure AD service principal, you need to let Terraform know the tenant ID, subscription ID, client ID, and client secret to use. You can do it by embedding those values in your Terraform scripts, as described in Create basic infrastructure by using Terraform. Alternately, you can set the following environment variables (and thus avoid accidentally checking in or sharing your credentials):+
+
 ARM_SUBSCRIPTION_ID
+
 ARM_CLIENT_ID
+
 ARM_CLIENT_SECRET
+
 ARM_TENANT_ID
 
 Sample shell script:
+
 #!/bin/sh
+
 echo "Setting environment variables for Terraform"
+
 export ARM_SUBSCRIPTION_ID=your_subscription_id
+
 export ARM_CLIENT_ID=your_appId
+
 export ARM_CLIENT_SECRET=your_password
+
 export ARM_TENANT_ID=your_tenant_id
 
 Build ACS with Meso DCOS container orchestrator using Terraform:
+
 Creates an Azure Container Service Instance
+
 Note: All arguments including the client secret will be stored in the raw state as plain-text. Read more about sensitive data in state.
 
 Terraform template: azurerm_container_service 
@@ -204,31 +245,27 @@ Output:
 C:\TestLabs\Terraform\azurerm_container_service>terraform init
 
 Initializing provider plugins...
+
 - Checking for available provider plugins on https://releases.hashicorp.com...
+
 - Downloading plugin for provider "azurerm" (0.3.0)...
 
-The following providers do not have any version constraints in configuration,
-so the latest version was installed.
+The following providers do not have any version constraints in configuration, so the latest version was installed.
 
-To prevent automatic upgrades to new major versions that may contain breaking
-changes, it is recommended to add version = "..." constraints to the
-corresponding provider blocks in configuration, with the constraint strings
+To prevent automatic upgrades to new major versions that may contain breaking changes, it is recommended to add version = "..." constraints to the corresponding provider blocks in configuration, with the constraint strings
 suggested below.
 
 * provider.azurerm: version = "~> 0.3"
 
 Terraform has been successfully initialized!
 
-You may now begin working with Terraform. Try running "terraform plan" to see
-any changes that are required for your infrastructure. All Terraform commands
-should now work.
+You may now begin working with Terraform. Try running "terraform plan" to see any changes that are required for your infrastructure. All Terraform commands should now work.
 
-If you ever set or change modules or backend configuration for Terraform,
-rerun this command to reinitialize your working directory. If you forget, other
-commands will detect it and remind you to do so if necessary.
+If you ever set or change modules or backend configuration for Terraform, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.
 
 
 Step (2): Terraform review and validate the template. 
+
 This step compares the requested resources to the state information saved by Terraform and then outputs the planned execution. Resources are not created in Azure.
 
 $ terraform plan
@@ -236,6 +273,7 @@ $ terraform plan
 Output:
 
 C:\TestLabs\Terraform\azurerm_container_service>terraform plan
+
 Refreshing Terraform state in-memory prior to plan...
 The refreshed state will be used to calculate this plan, but will not be
 persisted to local or remote state storage.
@@ -281,9 +319,7 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 ------------------------------------------------------------------------
 
-Note: You didn't specify an "-out" parameter to save this plan, so Terraform
-can't guarantee that exactly these actions will be performed if
-"terraform apply" is subsequently run.
+Note: You didn't specify an "-out" parameter to save this plan, so Terraform can't guarantee that exactly these actions will be performed if "terraform apply" is subsequently run.
 
 
 Step (3): Build the infrastructure in Azure, apply the template in Terraform
@@ -293,6 +329,7 @@ $ terraform apply
 Output:
 
 C:\TestLabs\Terraform\azurerm_container_service>terraform apply
+
 azurerm_resource_group.test: Creating...
   location: "" => "eastus"
   name:     "" => "demo-acs-dcos-tf-eastus-rg"
