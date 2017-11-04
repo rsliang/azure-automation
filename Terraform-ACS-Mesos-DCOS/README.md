@@ -11,6 +11,7 @@ https://www.terraform.io/downloads.html
 Step (2): Add Terraform executable to the Path
 
 Step (3): Verify Terraform install
+
 $ C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
 
 Output:
@@ -59,7 +60,9 @@ Step (4): Set up Terraform access to Azure
 To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.
 
 Azure env setup: provider.azurerm
+
 Run `az login` to obtain Azure CLI Auth Tokens 
+
 $ az login
 
 Output:
@@ -89,7 +92,9 @@ To sign in, use a web browser to open the page https://aka.ms/devicelogin and en
     ]
 
 Setp (5): Query account for subscription ID and tenant ID:
+
 $ az account show --query "{subscriptionId:id, tenantId:tenantId}"
+
 Output:
 C:\TestLabs\Terraform\azurerm_container_service>az account show --query "{subscriptionId:id, tenantId:tenantId}"
 {
@@ -98,12 +103,16 @@ C:\TestLabs\Terraform\azurerm_container_service>az account show --query "{subscr
 }
 
 Step (6): Set the subscription for the session
+
 $ az account set --subscription="${SUBSCRIPTION_ID}"
+
 Output:
 C:\opt\terraform_0.10.7_windows_amd64>az account set --subscription="c27{...}c1c"
 
 Step (7): Create separate credential for Terraform
+
 $ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
+
 Output:
 C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/c27{...}c1c"
 {
@@ -115,6 +124,7 @@ C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role=
 }
 
 Step (8): Set environment variables (optional)
+
 After you create and configure an Azure AD service principal, you need to let Terraform know the tenant ID, subscription ID, client ID, and client secret to use. You can do it by embedding those values in your Terraform scripts, as described in Create basic infrastructure by using Terraform. Alternately, you can set the following environment variables (and thus avoid accidentally checking in or sharing your credentials):+
 ARM_SUBSCRIPTION_ID
 ARM_CLIENT_ID
@@ -181,6 +191,7 @@ resource "azurerm_container_service" "test" {
 II. Build Azure infrastructure - applying Terraform template
 ****************************************************************
 Step (1): Initialize Terraform
+
 $ terraform init
 
 Output:
@@ -269,6 +280,7 @@ can't guarantee that exactly these actions will be performed if
 
 
 Step (3): Build the infrastructure in Azure, apply the template in Terraform
+
 $ terraform apply
 
 Output:
@@ -314,7 +326,7 @@ Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
  **********
  Resources:
  **********
-  Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
+ Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
  
  Gettring Started: 
  
