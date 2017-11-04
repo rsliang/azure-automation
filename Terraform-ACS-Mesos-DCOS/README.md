@@ -1,14 +1,16 @@
-This Terraform template builds Azure Compute resources for a Mesos DC/OS Clusters using Azure Container Service.
+
+This is a Terraform usage example for Mesos DCOS orchestration.  It uses the "azurerm_container_service" template to create an Azure Container Services instance with orchestration_platform = "DCOS".
+
 
 *************************
-Step 1: Install Terraform
+I. Install Terraform
 *************************
-(1) Download Terraform package
+Step (1): Download Terraform package
 https://www.terraform.io/downloads.html
 
-(2) Add Terraform executable to the Path
+Step (2): Add Terraform executable to the Path
 
-(3) Verify Terraform install
+Step (3): Verify Terraform install
 $ C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
 
 Output:
@@ -53,7 +55,7 @@ less common or more advanced commands. If you're just getting
 started with Terraform, stick with the common commands. For the
 other commands, please read the help and docs before usage.
 
-(4) Set up Terraform access to Azure
+Step (4): Set up Terraform access to Azure
 To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.
 
 Azure env setup: provider.azurerm
@@ -86,7 +88,7 @@ To sign in, use a web browser to open the page https://aka.ms/devicelogin and en
       }
     ]
 
-(5) Query account for subscription ID and tenant ID:
+Setp (5): Query account for subscription ID and tenant ID:
 $ az account show --query "{subscriptionId:id, tenantId:tenantId}"
 Output:
 C:\TestLabs\Terraform\azurerm_container_service>az account show --query "{subscriptionId:id, tenantId:tenantId}"
@@ -95,12 +97,12 @@ C:\TestLabs\Terraform\azurerm_container_service>az account show --query "{subscr
   "tenantId": "bf5{...}9d3"
 }
 
-(6) Set the subscription for the session
+Step (6): Set the subscription for the session
 $ az account set --subscription="${SUBSCRIPTION_ID}"
 Output:
 C:\opt\terraform_0.10.7_windows_amd64>az account set --subscription="c27{...}c1c"
 
-(7) Create separate credential for Terraform
+Step (7): Create separate credential for Terraform
 $ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
 Output:
 C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/c27{...}c1c"
@@ -112,7 +114,7 @@ C:\TestLabs\Terraform\azurerm_container_service>az ad sp create-for-rbac --role=
   "tenant": "bf5{...}9d3"
 }
 
-(8) Set environment variables (optional)
+Step (8): Set environment variables (optional)
 After you create and configure an Azure AD service principal, you need to let Terraform know the tenant ID, subscription ID, client ID, and client secret to use. You can do it by embedding those values in your Terraform scripts, as described in Create basic infrastructure by using Terraform. Alternately, you can set the following environment variables (and thus avoid accidentally checking in or sharing your credentials):+
 ARM_SUBSCRIPTION_ID
 ARM_CLIENT_ID
@@ -176,9 +178,9 @@ resource "azurerm_container_service" "test" {
 
 
 ****************************************************************
-Step 2: Build Azure infrastructure - applying Terraform template
+II. Build Azure infrastructure - applying Terraform template
 ****************************************************************
-(1) Initialize Terraform
+Step (1): Initialize Terraform
 $ terraform init
 
 Output:
@@ -209,7 +211,7 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 
 
-(2) Terraform review and validate the template. 
+Step (2): Terraform review and validate the template. 
 This step compares the requested resources to the state information saved by Terraform and then outputs the planned execution. Resources are not created in Azure.
 
 $ terraform plan
@@ -266,7 +268,7 @@ can't guarantee that exactly these actions will be performed if
 "terraform apply" is subsequently run.
 
 
-(3) Build the infrastructure in Azure, apply the template in Terraform
+Step (3): Build the infrastructure in Azure, apply the template in Terraform
 $ terraform apply
 
 Output:
@@ -307,7 +309,18 @@ azurerm_container_service.test: Still creating... (7m0s elapsed)
 azurerm_container_service.test: Creation complete after 7m8s (ID: /subscriptions/c27{...}e5c-.../containerServices/acctestcontservice1)
 
 Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
-
  
 
+ **********
+ Resources:
+ **********
+  Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
  
+ Gettring Started: 
+ Instroduction: https://www.terraform.io/intro/index.html
+ Install Terraform: https://www.terraform.io/intro/getting-started/install.html
+ Build Infrastructure: https://www.terraform.io/intro/getting-started/build.html
+ Provision: https://www.terraform.io/intro/getting-started/provision.html
+ Change Infrastructure: https://www.terraform.io/intro/getting-started/change.html
+ Destroy Infrastructure: https://www.terraform.io/intro/getting-started/destroy.html
+ Example Configuration: https://www.terraform.io/intro/examples/index.html
