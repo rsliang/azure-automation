@@ -190,7 +190,9 @@ Creates an Azure Container Service Instance
 Note: All arguments including the client secret will be stored in the raw state as plain-text. Read more about sensitive data in state.
 
 Terraform template: azurerm_container_service 
+
 azurerm_container_service.tf:
+
 resource "azurerm_resource_group" "test" {
   name     = "demo-acs-dcos-tf-eastus-rg"
   location = "East US"
@@ -289,29 +291,53 @@ Resource actions are indicated with the following symbols:
 Terraform will perform the following actions:
 
   + azurerm_container_service.test
+  
       id:                                                   <computed>
+      
       agent_pool_profile.#:                                 "1"
+      
       agent_pool_profile.2827755561.count:                  "1"
+      
       agent_pool_profile.2827755561.dns_prefix:             "acctestagent1-{...}
+      
       agent_pool_profile.2827755561.fqdn:                   <computed>
+      
       agent_pool_profile.2827755561.name:                   "default"
+      
       agent_pool_profile.2827755561.vm_size:                "Standard_A0"
+      
       diagnostics_profile.#:                                "1"
+      
       diagnostics_profile.734881840.enabled:                "false"
+      
       diagnostics_profile.734881840.storage_uri:            <computed>
+      
       linux_profile.#:                                      "1"
+      
       linux_profile.2765581951.admin_username:              "acctestuser1"
+      
       linux_profile.2765581951.ssh_key.#:                   "1"
+      
       linux_profile.2765581951.ssh_key.1472416176.key_data: "ssh-rsa AAA{...}1CR terraform@demo.tld"
+      
       location:                                             "eastus"
+      
       master_profile.#:                                     "1"
+      
       master_profile.3882221260.count:                      "1"
+      
       master_profile.3882221260.dns_prefix:                 "acctestmaster1-{...}"
+      
       master_profile.3882221260.fqdn:                       <computed>
+      
       name:                                                 "acctestcontservice1"
+      
       orchestration_platform:                               "DCOS"
+      
       resource_group_name:                                  "demo-acs-dcos-tf-eastus-rg"
+      
       tags.%:                                               "1"
+      
       tags.Environment:                                     "Demo"
 
 
@@ -331,38 +357,69 @@ Output:
 C:\TestLabs\Terraform\azurerm_container_service>terraform apply
 
 azurerm_resource_group.test: Creating...
+
   location: "" => "eastus"
+  
   name:     "" => "demo-acs-dcos-tf-eastus-rg"
+  
   tags.%:   "" => "<computed>"
+  
 azurerm_resource_group.test: Creation complete after 1s (ID: /subscriptions/c27{...}e5c-...ourceGroups/demo-acs-dcos-tf-eastus-rg)
+
 azurerm_container_service.test: Creating...
+
   agent_pool_profile.#:                                 "" => "1"
+  
   agent_pool_profile.2827755561.count:                  "" => "1"
+  
   agent_pool_profile.2827755561.dns_prefix:             "" => "acctestagent1-{...}"
+  
   agent_pool_profile.2827755561.fqdn:                   "" => "<computed>"
+  
   agent_pool_profile.2827755561.name:                   "" => "default"
+  
   agent_pool_profile.2827755561.vm_size:                "" => "Standard_A0"
+  
   diagnostics_profile.#:                                "" => "1"
+  
   diagnostics_profile.734881840.enabled:                "" => "false"
+  
   diagnostics_profile.734881840.storage_uri:            "" => "<computed>"
+  
   linux_profile.#:                                      "" => "1"
+  
   linux_profile.2765581951.admin_username:              "" => "acctestuser1"
+  
   linux_profile.2765581951.ssh_key.#:                   "" => "1"
+  
   linux_profile.2765581951.ssh_key.1472416176.key_data: "" => "ssh-rsa AAA{...}1CR terraform@demo.tld"
+  
   location:                                             "" => "eastus"
+  
   master_profile.#:                                     "" => "1"
+  
   master_profile.3882221260.count:                      "" => "1"
+  
   master_profile.3882221260.dns_prefix:                 "" => "acctestmaster1-{...}"
+  
   master_profile.3882221260.fqdn:                       "" => "<computed>"
+  
   name:                                                 "" => "acctestcontservice1"
+  
   orchestration_platform:                               "" => "DCOS"
+  
   resource_group_name:                                  "" => "demo-acs-dcos-tf-eastus-rg"
+  
   tags.%:                                               "" => "1"
+  
   tags.Environment:                                     "" => "Demo"
+  
 azurerm_container_service.test: Still creating... (10s elapsed)
+
 azurerm_container_service.test: Still creating... (20s elapsed)
 ...
 azurerm_container_service.test: Still creating... (7m0s elapsed)
+
 azurerm_container_service.test: Creation complete after 7m8s (ID: /subscriptions/c27{...}e5c-.../containerServices/acctestcontservice1)
 
 Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
