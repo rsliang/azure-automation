@@ -76,11 +76,11 @@ To sign in, use a web browser to open the page https://aka.ms/devicelogin and en
         "cloudName": "AzureCloud",
         "id": "c27{...}c1c",
         "isDefault": true,
-        "name": "Visual Studio Enterprise",
+        "name": "{...}",
         "state": "Enabled",
         "tenantId": "bf5{...}9d3",
         "user": {
-          "name": "rsliang@yahoo.com",
+          "name": "{...}@{...}.com",
           "type": "user"
         }
       }
