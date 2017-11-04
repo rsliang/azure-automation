@@ -317,10 +317,17 @@ Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
   Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
  
  Gettring Started: 
+ 
  Instroduction: https://www.terraform.io/intro/index.html
+ 
  Install Terraform: https://www.terraform.io/intro/getting-started/install.html
+ 
  Build Infrastructure: https://www.terraform.io/intro/getting-started/build.html
+ 
  Provision: https://www.terraform.io/intro/getting-started/provision.html
+ 
  Change Infrastructure: https://www.terraform.io/intro/getting-started/change.html
+ 
  Destroy Infrastructure: https://www.terraform.io/intro/getting-started/destroy.html
+ 
  Example Configuration: https://www.terraform.io/intro/examples/index.html
