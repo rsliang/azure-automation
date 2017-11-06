@@ -106,20 +106,21 @@ Step (4.4) Azure CLI - Azure authenticated
 Step (4.5) Go back to CLI - Completed authentication with Azure
 
 Output:
-        [
-          {
-            "cloudName": "AzureCloud",
-            "id": "c27{...}c1c",
-            "isDefault": true,
-            "name": "{...}",
-            "state": "Enabled",
-            "tenantId": "bf5{...}9d3",
-            "user": {
-              "name": "{...}@{...}.com",
-              "type": "user"
-            }
-          }
-        ]
+
+    [
+      {
+        "cloudName": "AzureCloud",
+        "id": "c27{...}c1c",
+        "isDefault": true,
+        "name": "{...}",
+        "state": "Enabled",
+        "tenantId": "bf5{...}9d3",
+        "user": {
+          "name": "{...}@{...}.com",
+          "type": "user"
+        }
+      }
+    ]
 
 Step (5): (Optional) Set subscription ID for the sesssion
 
@@ -130,7 +131,6 @@ Set the SUBSCRIPTION_ID environment variable to hold the value of the returned i
 Output:
 
     C:\>az account set --subscription="c27{...}c1c"
-
 
 Step (6): Query account for subscription ID and tenant ID:
 
