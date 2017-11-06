@@ -1,5 +1,5 @@
 
-This is a Terraform usage example for Mesos DCOS orchestration.  It uses the "azurerm_container_service" template to create an Azure Container Services instance with orchestration_platform = "DCOS".
+This is a Terraform usage example to provision a Mesos DCOS cluster in Azure.  It uses the "azurerm_container_service" Terraform template to provision an Azure Container Services instance with orchestration_platform = "DCOS".
 
 
 *************************
@@ -13,75 +13,75 @@ Step (2): Add Terraform executable to the Path
 
 Step (3): Verify Terraform install
 
-$ C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
+$ terraform.exe
 
 Output:
 
-C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
+    C:\opt\terraform_0.10.7_windows_amd64>terraform.exe
 
-Usage: terraform [--version] [--help] <command> [args]
+    Usage: terraform [--version] [--help] <command> [args]
 
-The available commands for execution are listed below.
+    The available commands for execution are listed below.
 
-The most common, useful commands are shown first, followed by less common or more advanced commands. If you're just getting
-started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
+    The most common, useful commands are shown first, followed by less common or more advanced commands. If you're just getting
+    started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
 
-Common commands:
+    Common commands:
 
-    apply              Builds or changes infrastructure
-    
-    console            Interactive console for Terraform interpolations
-    
-    destroy            Destroy Terraform-managed infrastructure
-    
-    env                Workspace management
-    
-    fmt                Rewrites config files to canonical format
-    
-    get                Download and install modules for the configuration
-    
-    graph              Create a visual graph of Terraform resources
-    
-    import             Import existing infrastructure into Terraform
-    
-    init               Initialize a Terraform working directory
-    
-    output             Read an output from a state file
-    
-    plan               Generate and show an execution plan
-    
-    providers          Prints a tree of the providers used in the configuration
-    
-    push               Upload this Terraform module to Atlas to run
-    
-    refresh            Update local state file against real resources
-    
-    show               Inspect Terraform state or plan
-    
-    taint              Manually mark a resource for recreation
-    
-    untaint            Manually unmark a resource as tainted
-    
-    validate           Validates the Terraform files
-    
-    version            Prints the Terraform version
-    
-    workspace          Workspace management
+        apply              Builds or changes infrastructure
 
-All other commands:
+        console            Interactive console for Terraform interpolations
 
-    debug              Debug output management (experimental)
-    
-    force-unlock       Manually unlock the terraform state
-    
-    state              Advanced state management
-    
-Usage: terraform [--version] [--help] <command> [args]
+        destroy            Destroy Terraform-managed infrastructure
 
-The available commands for execution are listed below.
+        env                Workspace management
 
-The most common, useful commands are shown first, followed by less common or more advanced commands. If you're just getting
-started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
+        fmt                Rewrites config files to canonical format
+
+        get                Download and install modules for the configuration
+
+        graph              Create a visual graph of Terraform resources
+
+        import             Import existing infrastructure into Terraform
+
+        init               Initialize a Terraform working directory
+
+        output             Read an output from a state file
+
+        plan               Generate and show an execution plan
+
+        providers          Prints a tree of the providers used in the configuration
+
+        push               Upload this Terraform module to Atlas to run
+
+        refresh            Update local state file against real resources
+
+        show               Inspect Terraform state or plan
+
+        taint              Manually mark a resource for recreation
+
+        untaint            Manually unmark a resource as tainted
+
+        validate           Validates the Terraform files
+
+        version            Prints the Terraform version
+
+        workspace          Workspace management
+
+    All other commands:
+
+        debug              Debug output management (experimental)
+
+        force-unlock       Manually unlock the terraform state
+
+        state              Advanced state management
+
+    Usage: terraform [--version] [--help] <command> [args]
+
+    The available commands for execution are listed below.
+
+    The most common, useful commands are shown first, followed by less common or more advanced commands. If you're just getting
+    started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
 
 Step (4): Set up Terraform access to Azure
 
