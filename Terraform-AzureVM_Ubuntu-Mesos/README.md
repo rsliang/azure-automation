@@ -1102,12 +1102,13 @@ Output (Git Bash CLI):
 ********
 Summary:
 ********
-You have installed Terraform and configured Azure credentials so that you can start deploying infrastructure into your Azure subscription. You then tested your installation by creating a complete Virtual Machine w/Ubuntu Linux OS and other related resources in Azure.
+You have installed Terraform and configured Azure credentials so that you can start deploying infrastructure into your Azure subscription. You then tested your installation by creating a complete Virtual Machine w/Ubuntu Linux OS and other related resources in Azure.  Once you have built the Azure VM, you then ssh into the VM to download and install Mesos.
 
  **********
  Resources:
  **********
     Terraform Provider: azurerm_virtual_machine: https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html
+    Mesos Build: http://mesos.apache.org/documentation/latest/building/
  
  Gettring Started with Terraform: 
  
