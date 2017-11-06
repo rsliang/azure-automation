@@ -123,7 +123,8 @@ Output:
           }
         ]
 
-    Setp (5): Query account for subscription ID and tenant ID:
+
+Setp (5): Query account for subscription ID and tenant ID:
 
 $ az account show --query "{subscriptionId:id, tenantId:tenantId}"
 
