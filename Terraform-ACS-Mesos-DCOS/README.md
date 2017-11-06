@@ -1,4 +1,3 @@
-
 This is a Terraform sample demo lab to provision a Mesos DCOS cluster in Azure.  It leverages the "azurerm_container_service" Azure provider for Terraform to express infrastructure-as-code, and to deploy Azure Container Services instance with orchestration_platform set to "DCOS".  In this demo lab, Terraform Microsoft AzureRM Provider will interact with the Azure Resource Manager resources via the AzureRM API's. Prior to any Azure resource deployment, the Azure provider for Terraform needs to be configured with the credentials needed to generate OAuth tokens for the AzureRM API's.
 
 For more details, please see the "Install and configure Terraform to provision VMs and other infrastructure into Azure" Microsoft Docs link below:
