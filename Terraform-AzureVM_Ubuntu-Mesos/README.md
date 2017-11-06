@@ -212,13 +212,13 @@ Sample shell script to set those variables:
 
     export ARM_TENANT_ID=your_tenant_id
 
-Step (9): Create a tf script to be used directly by Terrform to deploy Azure Container Service with Meso DCOS container orchestrator
+Step (9): Create a tf script to be used directly by Terrform to deploy a complete Azure VM and other related sources.
 
-Creates an Azure Container Service Instance
+Creates an Azure Ubuntu Linux Virtual Machine Instance
 
 Note: All arguments including the client secret will be stored in the raw state as plain-text. Read more about sensitive data in state.
 
-Terraform Provider: azurerm_container_service 
+Terraform Provider: azurerm_virtual_machine 
 
 Copy and paster the followig content into the Create-VM-StdA0.tf JSON file:
 
@@ -387,12 +387,12 @@ Copy and paster the followig content into the Create-VM-StdA0.tf JSON file:
 
 
 
-*********************************************************************
+**************************************************************************
 Part II. Create a complete Azure VM - run the sample demo Terraform script
-*********************************************************************
-Create a complete VM and other related resources.
+**************************************************************************
+Create a complete VM with Ubuntu Linux OS and other related resources.
 
-1) Initialize Terraform. 
+step (1): Initialize Terraform. 
 
 This step ensures that Terraform has all the prerequisites to build your template in Azure.
 
@@ -434,7 +434,7 @@ Output:
     commands will detect it and remind you to do so if necessary.
 
 
-2) Terraform review and validate the template. 
+step (2): Terraform review and validate the template. 
 
 This step compares the requested resources to the state information saved by Terraform and then outputs the planned execution. Resources are not created in Azure.
 
@@ -455,7 +455,7 @@ Output:
 
     * azurerm_storage_account.mystorageaccount: "account_tier": required field is not set
 
-2) Terraform Plan
+Step (3): Terraform Plan
 
     $ terraform plan
 
@@ -626,12 +626,12 @@ Output:
     can't guarantee that exactly these actions will be performed if
     "terraform apply" is subsequently run.
 
-3) Build the infrastructure in Azure, apply the template in Terraform
+Step (4): Build the complete Azure VM infrastructure in Azure, apply the template in Terraform
 
     $ terraform apply
 
 Output:
-C:\>terraform apply
+    C:\>terraform apply
     azurerm_resource_group.myterraform: Refreshing state... (ID: /subscriptions/327{...}a2818d4/resourceGroups/myResourceGroup)
     azurerm_network_security_group.myterraformnsg: Refreshing state... (ID: /subscriptions/327...}kSecurityGroups/myNetworkSecurityGroup)
     random_id.randomId: Refreshing state... (ID: sZ0MVYFToy4)
@@ -689,7 +689,7 @@ C:\>terraform apply
  
 
 
-Step (4): Obtain the public IP address of your VM with az vm show
+Step (5): Obtain the public IP address of your VM with az vm show
 
     $ az vm show --resource-group myResourceGroup --name myVM -d --query [publicIps] --o tsv
 
@@ -698,7 +698,8 @@ Output:
 
     52.179.14.5
 
-5) SSH into the VM using Git Bash CLI
+
+Step (6): SSH into the VM using Git Bash CLI to install Mesos on Ubuntu
 
     $ ssh azureuser@<publicIps>
 
@@ -1255,7 +1256,7 @@ Output (Git Bash CLI):
     azureuser@myvm:~$
 
 
-Step (7): Building Mesos (Posix)
+Step (8): Building Mesos (Posix)
 # Change working directory.
     $ cd mesos
 
