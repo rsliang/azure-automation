@@ -91,11 +91,12 @@ Output:
     started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
 
 Step (4): Set up Terraform access to Azure
+
 To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.  The service principal grants your Terraform scripts using credentials to provision resources in your Azure subscription.
 
-    Azure env setup: provider.azurerm
+Azure env setup: provider.azurerm
 
-    Run `az login` to obtain Azure CLI Auth Tokens 
+Run `az login` to obtain Azure CLI Auth Tokens 
 
     $ az login
 
