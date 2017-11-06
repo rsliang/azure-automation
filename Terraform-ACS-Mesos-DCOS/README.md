@@ -1,8 +1,10 @@
 
-This is a Terraform usage example to provision a Mesos DCOS cluster in Azure.  It uses the "azurerm_container_service" Terraform template to provision an Azure Container Services instance with orchestration_platform = "DCOS".
+This is a Terraform sample demo lab to provision a Mesos DCOS cluster in Azure.  It leverages the "azurerm_container_service" Azure provider for Terraform to express infrastructure-as-code, and to deploy Azure Container Services instance with orchestration_platform set to "DCOS".  In this demo lab, Terraform Microsoft AzureRM Provider will interact with the Azure Resource Manager resources via the AzureRM API's. Prior to any Azure resource deployment, the Azure provider for Terraform needs to be configured with the credentials needed to generate OAuth tokens for the AzureRM API's.
+
+For more details, please see the Microsoft Docs link (below): Install and configure Terraform to provision VMs and other infrastructure into Azure:
+https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure
 
 
-*************************
 I. Install Terraform
 *************************
 Step (1): Download and unzip Terraform zip archive package for Windows, Linux or Mac
@@ -13,9 +15,11 @@ Step (2): Add Terraform executable to the Path
 
 Make sure terraform binary is available on the PATH.
 
-Step (3): Verify Terraform install
+Step (3): Verify Terraform install and patth configuration
 
 $ terraform.exe
+
+Usage: terraform [--version] [--help] <command> [args]
 
 Output:
 
@@ -86,8 +90,7 @@ Output:
     started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
 
 Step (4): Set up Terraform access to Azure
-
-To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.
+To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.  The service principal grants your Terraform scripts using credentials to provision resources in your Azure subscription.
 
 Azure env setup: provider.azurerm
 
@@ -123,8 +126,19 @@ Output:
           }
         ]
 
+Step (6): (Optional) Set subscription ID for the sesssion
 
-Setp (5): Query account for subscription ID and tenant ID:
+Set the SUBSCRIPTION_ID environment variable to hold the value of the returned id field from the subscription you want to use if you have multiple Azure subscriptions.
+
+$ az account set --subscription="${SUBSCRIPTION_ID}"
+
+Output:
+
+    C:\opt\terraform_0.10.7_windows_amd64>az account set --subscription="c27{...}c1c"
+
+
+
+Step (6): Query account for subscription ID and tenant ID:
 
 $ az account show --query "{subscriptionId:id, tenantId:tenantId}"
 
@@ -135,14 +149,6 @@ Output:
       "subscriptionId": "c27{...}c1c",
       "tenantId": "bf5{...}9d3"
     }
-
-Step (6): Set the subscription for the session
-
-$ az account set --subscription="${SUBSCRIPTION_ID}"
-
-Output:
-
-    C:\opt\terraform_0.10.7_windows_amd64>az account set --subscription="c27{...}c1c"
 
 Step (7): Create separate credential for Terraform
 
@@ -172,7 +178,7 @@ After you create and configure an Azure AD service principal, you need to let Te
 
     ARM_TENANT_ID
 
-Sample shell script:
+Sample shell script to set those variables:
 
     #!/bin/sh
 
@@ -186,15 +192,15 @@ Sample shell script:
 
     export ARM_TENANT_ID=your_tenant_id
 
-Build ACS with Meso DCOS container orchestrator using Terraform:
+Step (9): Create a tf script to be used directly by Terrform to deploy Azure Container Service with Meso DCOS container orchestrator
 
 Creates an Azure Container Service Instance
 
 Note: All arguments including the client secret will be stored in the raw state as plain-text. Read more about sensitive data in state.
 
-Terraform template: azurerm_container_service 
+Terraform Provider: azurerm_container_service 
 
-azurerm_container_service.tf:
+Copy and paster the followig content into the azurerm_container_service.tf JSON file:
 
     resource "azurerm_resource_group" "test" {
       name     = "demo-acs-dcos-tf-eastus-rg"
@@ -238,10 +244,12 @@ azurerm_container_service.tf:
 
 
 
-****************************************************************
-II. Build Azure infrastructure - applying Terraform template
-****************************************************************
-Step (1): Initialize Terraform
+*********************************************************************
+II. Build Azure infrastructure - run the sample demo Terraform script
+*********************************************************************
+Step (1): Initialize Terraform - run terraform init
+
+This command downloads the Azure modules required specified in the *.tf file.
 
 $ terraform init
 
@@ -269,7 +277,7 @@ Output:
     If you ever set or change modules or backend configuration for Terraform, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.
 
 
-Step (2): Terraform review and validate the template. 
+Step (2): Terraform review and validate the template - preview the tf script with terraform plan.
 
 This step compares the requested resources to the state information saved by Terraform and then outputs the planned execution. Resources are not created in Azure.
 
@@ -353,7 +361,7 @@ Output:
 
 Step (3): Build the infrastructure in Azure, apply the template in Terraform
 
-$ terraform apply
+$ terraform apply - run terraform apply to create resources specified in the tf script 
 
 Output:
 
@@ -427,13 +435,17 @@ Output:
 
     Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
  
+********
+Summary:
+********
+You have installed Terraform and configured Azure credentials so that you can start deploying infrastructure into your Azure subscription. You then tested your installation by creating a Mesos DCOS cluster in Azure Containter Service.
 
  ********************
  Terraform Resources:
  ********************
  Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
  
- Gettring Started: 
+ Gettring Started with Terraform: 
  
  Instroduction: https://www.terraform.io/intro/index.html
  
