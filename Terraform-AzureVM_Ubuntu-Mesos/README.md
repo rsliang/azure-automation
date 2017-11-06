@@ -95,13 +95,17 @@ Output:
 
     To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code EJGA3L6Q7 to authenticate.
 
-        4.1) Go to browser and navigate to: https://aka.ms/devicelogin
-        4.2) Azure authentication with Device Login code: EJGA3L6Q7
+Step (4.1) Go to browser and navigate to: https://aka.ms/devicelogin
 
-        4.3) Click <Continue> > to select azure account to login
-        4.4) Azure CLI - Azure authenticated
+Setp (4.2) Azure authentication with Device Login code: EJGA3L6Q7
 
-        4.5) Go back to CLI - Completed authentication with Azure
+Step (4.3) Click <Continue> > to select azure account to login
+
+Step (4.4) Azure CLI - Azure authenticated
+
+Step (4.5) Go back to CLI - Completed authentication with Azure
+
+Output:
         [
           {
             "cloudName": "AzureCloud",
@@ -117,7 +121,7 @@ Output:
           }
         ]
 
-Step (6): (Optional) Set subscription ID for the sesssion
+Step (5): (Optional) Set subscription ID for the sesssion
 
 Set the SUBSCRIPTION_ID environment variable to hold the value of the returned id field from the subscription you want to use if you have multiple Azure subscriptions.
 
