@@ -6,7 +6,7 @@ For more details, please see the "Install and configure Terraform to provision V
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure
 
 
-I. Install Terraform
+Part I. Install Terraform
 *************************
 Step (1): Download and unzip Terraform zip archive package for Windows, Linux or Mac
 
@@ -246,7 +246,7 @@ Copy and paster the followig content into the azurerm_container_service.tf JSON 
 
 
 *********************************************************************
-II. Build Azure infrastructure - run the sample demo Terraform script
+Part II. Build Azure infrastructure - run the sample demo Terraform script
 *********************************************************************
 Step (1): Initialize Terraform - run terraform init
 
@@ -443,10 +443,10 @@ Summary:
 ********
 You have installed Terraform and configured Azure credentials so that you can start deploying infrastructure into your Azure subscription. You then tested your installation by creating a Mesos DCOS cluster in Azure Containter Service.
 
- ********************
- Terraform Resources:
- ********************
-    Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
+ **********
+ Resources:
+ **********
+    Terraform Provider: azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
  
  Gettring Started with Terraform: 
  
