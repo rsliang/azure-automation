@@ -1,4 +1,4 @@
-This is a Terraform sample demo lab to provision a create a complete Linux virtual machine infrastructure in Azure with Terraform, which includes the following ARM resources:
+This is a Terraform sample demo lab to create a complete Linux virtual machine and other related resources in Azure with Terraform, which includes the following ARM resources:
 
     - Azure connection 
     
