@@ -136,8 +136,7 @@ Set the SUBSCRIPTION_ID environment variable to hold the value of the returned i
 
 Output:
 
-    C:\opt\terraform_0.10.7_windows_amd64>az account set --subscription="c27{...}c1c"
-
+    C:\>az account set --subscription="c27{...}c1c"
 
 
 Step (6): Query account for subscription ID and tenant ID:
