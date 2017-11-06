@@ -4,10 +4,10 @@ variable "resourcename" {
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-    subscription_id = "327ead23-9a0f-4d49-a37f-9c9dda2818d4"
-    client_id       = "d975d799-1355-4d24-9396-717a99856d4d"
-    client_secret   = "b6bf0764-5734-44f9-87d1-c083218de09f"
-    tenant_id       = "72f988bf-86f1-41af-91ab-2d7cd011db47"
+    subscription_id = "327{snip}8d4"
+    client_id       = "d975{snip}6d4d"
+    client_secret   = "b6bf0{snip}e09f"
+    tenant_id       = "72f9{snip}11db47"
 }
 
 # Create a resource group if it doesn’t exist
@@ -150,7 +150,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
         disable_password_authentication = true
         ssh_keys {
             path     = "/home/azureuser/.ssh/authorized_keys"
-            key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZGc8x5Mxwb1BZwrMmBAML/V2kukHOsFPEf8RUhjFhlrAbump5r36HTcHtjR4jOCbJGi4pafqSZNkbyzuuGVEegKgTih8eT82bA7kAX+EUdk/ftUN0GMTVyaWOhizEj5IB4mfy5THn1AUXhhkNMc8uQVeyFP/WT71BufnJXT1clnqGdKrcKxg4/wIz8HZnqgPKXVfgefIR56PLGsepsebVSzFylauBxHPfX3APDPDH9dq2Kr61P9TLn0EKyM8fvFQ0Tc41LaQZbnvc2araIOuuFcXpc6XZ+PNjAMk0BuuVciTXgUvxY9fh6ZCLakUp8riDgVU3v8cZujBsvI+3V1CR"
+            key_data = "ssh-rsa AAAA{snip}+3V1CR"
         }
     }
 
