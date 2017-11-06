@@ -1,4 +1,4 @@
-This is a Terraform sample demo lab to create a complete Linux virtual machine and other related resources in Azure with Terraform, which includes the following ARM resources:
+This is a Terraform sample demo lab to create a complete Linux Ubuntu virtual machine and other associated ARM resources in Azure with Terraform, which includes the following ARM resources:
 
     - Azure connection 
     - Resource group
@@ -9,17 +9,22 @@ This is a Terraform sample demo lab to create a complete Linux virtual machine a
     - Storage account for diagnostics
     - Virtual machine
 
-The "azurerm_virtual_machine" Azure provider for Terraform is used to express infrastructure-as-code, and to deploy Azure Virtual Machine instance and other related ARM resources.  In this demo lab, Terraform Microsoft AzureRM Provider will interact with the Azure Resource Manager resources via the AzureRM API's. Prior to any Azure resource deployment, the Azure provider for Terraform needs to be configured with the credentials needed to generate OAuth tokens for the AzureRM API's.
+You can define and create complete infrastructure deployments across multiple cloud providers using a Terraform template, which is build in a human-readable format.  Microsoft AzureRM provider templates enables you to consistently create and configure Azure resources, and is reusable across your organization. This demo lab shows you how to create a complete Linux environment and supporting resources with Terraform.
 
-Terraform allows you to define and create complete infrastructure deployments in Azure. You build Terraform templates in a human-readable format that create and configure Azure resources in a consistent, reproducible manner. This demo lab shows you how to create a complete Linux environment and supporting resources with Terraform.
+This demo lab uses the "azurerm_virtual_machine" Azure provider template for Terraform to express infrastructure-as-code, and to deploy Azure Virtual Machine instance and other associated ARM resources.  In this demo lab, Terraform Microsoft AzureRM Provider will interact with the Azure Resource Manager resources via the AzureRM API's. Prior to your Azure resource deployment, the AzureRM provider for Terraform needs to be configured with the credentials needed to generate OAuth tokens for the AzureRM API's.
+
+Once the VM is created in Azure, you will ssh into the VM to download/extract Mesos release tar.gz archive for your operating system, configure/build Mesos, and make framework binearies bundled with Mesos (see link below).
+
+http://mesos.apache.org/documentation/latest/building/
 
 For more details, please see the "Install and configure Terraform to provision VMs and other infrastructure into Azure" Microsoft Docs link below:
 
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure
 
 
-Part I. Install Terraform
-*************************
+**************************************************************
+Part I. Install Terraform and create AzureRM provider template
+**************************************************************
 Step (1): Download and unzip Terraform zip archive package for Windows, Linux or Mac
 
     https://www.terraform.io/downloads.html
@@ -186,7 +191,7 @@ Note: All arguments including the client secret will be stored in the raw state 
 
 Terraform Provider: azurerm_virtual_machine 
 
-Copy and paster the followig content into the Create-VM-StdA0.tf JSON file:
+Copy and paster the followig content into the Create-VM-StdA0.tf configuration file:
 
     variable "resourcename" {
       default = "myResourceGroup"
@@ -356,7 +361,7 @@ Copy and paster the followig content into the Create-VM-StdA0.tf JSON file:
 **************************************************************************
 Part II. Create a complete Azure VM - run the sample demo Terraform script
 **************************************************************************
-Create a complete VM with Ubuntu Linux OS and other related resources.
+Create a complete AzureRM VM with Ubuntu Linux OS and other associated Azure resources.
 
 step (1): Initialize Terraform. 
 
@@ -364,15 +369,15 @@ This step ensures that Terraform has all the prerequisites to build your templat
 
 Terraform configuration file: Create-VM-StdA0.tf
 
-Set Size=Standard A0
-
-Set OSDisk=Standard LRS
+Note:
+- VM Size is set to "Standard A0" for demo purposes
+- OSDisk is set to "Standard LRS"
 
     $ terraform init
 
 Output:
 
-    C:\>terraform init
+    C:\{tf directory}\>terraform init
 
     Initializing provider plugins...
     - Checking for available provider plugins on https://releases.hashicorp.com...
@@ -401,7 +406,7 @@ Output:
     commands will detect it and remind you to do so if necessary.
 
 
-step (2): Terraform review and validate the template. 
+Step (2): Terraform review and validate the template. 
 
 This step compares the requested resources to the state information saved by Terraform and then outputs the planned execution. Resources are not created in Azure.
 
@@ -409,7 +414,7 @@ This step compares the requested resources to the state information saved by Ter
 
 Output:
 
-    C:\>terraform plan
+    C:\{tf directory}\>terraform plan
 
     There are warnings related to your configuration. If no errors occurred, Terraform will continue despite these warnings. It is a good idea to resolve these warnings in the near future.
 
@@ -423,13 +428,15 @@ Output:
 
     * azurerm_storage_account.mystorageaccount: "account_tier": required field is not set
 
-Step (3): Terraform Plan
+Step (3): Execution Plan
+
+Run "terraform plan" in the same directory where "Create-VM-StdA0.tf" was created to determine Terraform's execution plan when it apply this configuration.
 
     $ terraform plan
 
 Output:
 
-    $ C:\>terraform plan
+    $ C:\{tf directory}\>terraform plan
     Refreshing Terraform state in-memory prior to plan...
     The refreshed state will be used to calculate this plan, but will not be
     persisted to local or remote state storage.
@@ -601,7 +608,7 @@ Step (4): Build the complete Azure VM infrastructure in Azure, apply the templat
 
 Output:
 
-    C:\>terraform apply
+    C:\{tf directory}\>terraform apply
     azurerm_resource_group.myterraform: Refreshing state... (ID: /subscriptions/327{...}a2818d4/resourceGroups/myResourceGroup)
     azurerm_network_security_group.myterraformnsg: Refreshing state... (ID: /subscriptions/327...}kSecurityGroups/myNetworkSecurityGroup)
     random_id.randomId: Refreshing state... (ID: sZ0MVYFToy4)
@@ -665,16 +672,18 @@ Step (5): Obtain the public IP address of your VM with az vm show
 
 Output:
 
-    C:\>az vm show --resource-group myResourceGroup --name myVM -d --query [publicIps] --o tsv
+    C:\{tf directory}\>az vm show --resource-group myResourceGroup --name myVM -d --query [publicIps] --o tsv
 
     52.179.14.5
 
 
-Step (6): SSH into the VM using Git Bash CLI to install Mesos on Ubuntu
+Step (6): SSH into the VM 
+
+SSH into the VM using the public IP address obtained above via Git Bash CLI to install Mesos on Ubuntu
 
     $ ssh azureuser@<publicIps>
 
-Output (Git Bash CLI):
+Output - Git Bash CLI:
 
     {snip}@{snip} MINGW64 /c/demo/Terraform
     $ ssh azureuser@52.{...}.14.5
@@ -710,14 +719,14 @@ Output (Git Bash CLI):
 
 Part III. Install Mesos on Linux Ubuntu 16.04:
 
-Step (1): Downloading Mesos
+Step (1): Download Mesos
 
 Download latest stable Mesos release from Apache and extract tar file
 
     $ wget http://www.apache.org/dist/mesos/1.4.0/mesos-1.4.0.tar.gz
     $ tar -zxf mesos-1.4.0.tar.gz
 
-Output (Git Bash CLI):
+Output - Git Bash CLI:
 
     azureuser@myvm:~$ wget http://www.apache.org/dist/mesos/1.4.0/mesos-1.4.0.tar.gz
     --2017-10-19 03:52:59--  http://www.apache.org/dist/mesos/1.4.0/mesos-1.4.0.tar.gz
@@ -739,7 +748,7 @@ Step (2): Clone the Mesos git repository
 
     $ git clone https://git-wip-us.apache.org/repos/asf/mesos.git
 
-Output (Git Bash CLI):
+Output - Git Bash CLI:
 
     azureuser@myvm:~$ git clone https://git-wip-us.apache.org/repos/asf/mesos.git
     Cloning into 'mesos'...
@@ -761,46 +770,13 @@ Step (3): Update the packages.
 
     $ sudo apt-get update
 
-Output (Git Bash CLI):
+Output - Git Bash CLI (truncated):
 
     azureuser@myvm:~$ sudo apt-get update
     Get:1 http://security.ubuntu.com/ubuntu xenial-security InRelease [102 kB]
     Hit:2 http://azure.archive.ubuntu.com/ubuntu xenial InRelease
     Get:3 http://azure.archive.ubuntu.com/ubuntu xenial-updates InRelease [102 kB]
-    Get:4 http://azure.archive.ubuntu.com/ubuntu xenial-backports InRelease [102 kB]
-    Get:5 <http://security.ubuntu.com/ubuntu xenial-security/main> Sources [97.9 kB]
-    Get:6 <http://security.ubuntu.com/ubuntu xenial-security/restricted> Sources [2,600 B]
-    Get:7 <http://security.ubuntu.com/ubuntu xenial-security/universe> Sources [43.4 kB]
-    Get:8 <http://security.ubuntu.com/ubuntu xenial-security/multiverse> Sources [1,140 B]
-    Get:9 <http://security.ubuntu.com/ubuntu xenial-security/main> amd64 Packages [370 kB]
-    Get:10 <http://security.ubuntu.com/ubuntu xenial-security/main> Translation-en [164 kB]
-    Get:11 <http://security.ubuntu.com/ubuntu xenial-security/restricted> amd64 Packages [7,352 B]
-    Get:12 <http://security.ubuntu.com/ubuntu xenial-security/restricted> Translation-en [2,432 B]
-    Get:13 <http://security.ubuntu.com/ubuntu xenial-security/universe> amd64 Packages [175 kB]
-    Get:14 <http://security.ubuntu.com/ubuntu xenial-security/universe> Translation-en [93.0 kB]
-    Get:15 <http://security.ubuntu.com/ubuntu xenial-security/multiverse> amd64 Packages [2,756 B]
-    Get:16 <http://security.ubuntu.com/ubuntu xenial-security/multiverse> Translation-en [1,236 B]
-    Get:17 <http://azure.archive.ubuntu.com/ubuntu xenial/main> Sources [868 kB]
-    Get:18 <http://azure.archive.ubuntu.com/ubuntu xenial/restricted> Sources [4,808 B]
-    Get:19 <http://azure.archive.ubuntu.com/ubuntu xenial/universe> Sources [7,728 kB]
-    Get:20 <http://azure.archive.ubuntu.com/ubuntu xenial/multiverse> Sources [179 kB]
-    Get:21 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> Sources [278 kB]
-    Get:22 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/restricted> Sources [3,404 B]
-    Get:23 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/universe> Sources [176 kB]
-    Get:24 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/multiverse> Sources [7,208 B]
-    Get:25 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 Packages [642 kB]
-    Get:26 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> Translation-en [269 kB]
-    Get:27 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/restricted> amd64 Packages [7,972 B]
-    Get:28 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/restricted> Translation-en [2,692 B]
-    Get:29 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/universe> amd64 Packages [540 kB]
-    Get:30 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/universe> Translation-en [220 kB]
-    Get:31 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/multiverse> amd64 Packages [15.3 kB]
-    Get:32 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/multiverse> Translation-en [7,544 B]
-    Get:33 <http://azure.archive.ubuntu.com/ubuntu xenial-backports/main> Sources [3,432 B]
-    Get:34 <http://azure.archive.ubuntu.com/ubuntu xenial-backports/universe> Sources [4,376 B]
-    Get:35 <http://azure.archive.ubuntu.com/ubuntu xenial-backports/main> amd64 Packages [4,860 B]
-    Get:36 <http://azure.archive.ubuntu.com/ubuntu xenial-backports/main> Translation-en [3,220 B]
-    Get:37 <http://azure.archive.ubuntu.com/ubuntu xenial-backports/universe> amd64 Packages [5,896 B]
+    ...{snip}
     Get:38 <http://azure.archive.ubuntu.com/ubuntu xenial-backports/universe> Translation-en [3,060 B]
     Fetched 12.2 MB in 9s (1,330 kB/s)
     Reading package lists... Done
@@ -810,7 +786,7 @@ Step (4): Install a few utility tools.
 
     $ sudo apt-get install -y tar wget git
 
-Output (Git Bash CLI):
+Output - Git Bash CLI:
 
     azureuser@myvm:~$ sudo apt-get install -y tar wget git
     Reading package lists... Done
@@ -850,7 +826,7 @@ step (5): Install the latest OpenJDK.
 
     $ sudo apt-get install -y openjdk-8-jdk
 
-Output (Git Bash CLI):
+Output - Git Bash CLI (truncated):
 
     azureuser@myvm:~$ sudo apt-get install -y openjdk-8-jdk
     Reading package lists... Done
@@ -893,17 +869,7 @@ Output (Git Bash CLI):
     Need to get 66.9 MB of archives.
     After this operation, 366 MB of additional disk space will be used.
     Get:1 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 fonts-dejavu-core all 2.35-1 [1,039 kB]
-    Get:2 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 fontconfig-config all 2.11.94-0ubuntu1.1 [49.9 kB]
-    Get:3 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libfontconfig1 amd64 2.11.94-0ubuntu1.1 [131 kB]
-    Get:4 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 fontconfig amd64 2.11.94-0ubuntu1.1 [178 kB]
-    Get:5 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libasyncns0 amd64 0.8-5build1 [12.3 kB]
-    Get:6 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 x11-common all 1:7.7+13ubuntu3 [22.4 kB]
-    Get:7 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libice6 amd64 2:1.0.9-1 [39.2 kB]
-    Get:8 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libjpeg-turbo8 amd64 1.4.2-0ubuntu3 [111 kB]
-    Get:9 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 liblcms2-2 amd64 2.6-3ubuntu2 [137 kB]
-
-    .....
-
+    ...{snip}
     Adding debian:RSA_Security_2048_v3.pem
     Adding debian:S-TRUST_Authentication_and_Encryption_Root_CA_2005_PN.pem
     Adding debian:Certum_Trusted_Network_CA.pem
@@ -929,7 +895,7 @@ Step (6): Install autotools (Only necessary if building from git repository).
 
     $ sudo apt-get install -y autoconf libtool
 
-Output (Git Bash CLI):
+Output-Git Bash CLI (truncated):
 
     azureuser@myvm:~$ sudo apt-get install -y autoconf libtool
     Reading package lists... Done
@@ -954,37 +920,7 @@ Output (Git Bash CLI):
     Need to get 32.1 MB of archives.
     After this operation, 106 MB of additional disk space will be used.
     Get:1 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libc6 amd64 2.23-0ubuntu9 [2,586 kB]
-    Get:2 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libmpc3 amd64 1.0.3-1 [39.7 kB]
-    Get:3 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 gcc-5-base amd64 5.4.0-6ubuntu1~16.04.5 [17.1 kB]
-    Get:4 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libstdc++6 amd64 5.4.0-6ubuntu1~16.04.5 [393 kB]
-    Get:5 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 m4 amd64 1.4.17-5 [195 kB]
-    Get:6 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 autoconf all 2.69-9 [321 kB]
-    Get:7 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 autotools-dev all 20150820.1 [39.8 kB]
-    Get:8 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 automake all 1:1.15-4ubuntu1 [510 kB]
-    Get:9 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 binutils amd64 2.26.1-1ubuntu1~16.04.5 [2,311 kB]
-    Get:10 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libisl15 amd64 0.16.1-1 [524 kB]
-    Get:11 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 cpp-5 amd64 5.4.0-6ubuntu1~16.04.5 [7,786 kB]
-    Get:12 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 cpp amd64 4:5.3.1-1ubuntu1 [27.7 kB]
-    Get:13 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libcc1-0 amd64 5.4.0-6ubuntu1~16.04.5 [38.8 kB]
-    Get:14 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libgomp1 amd64 5.4.0-6ubuntu1~16.04.5 [55.1 kB]
-    Get:15 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libitm1 amd64 5.4.0-6ubuntu1~16.04.5 [27.4 kB]
-    Get:16 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libatomic1 amd64 5.4.0-6ubuntu1~16.04.5 [8,920 B]
-    Get:17 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libasan2 amd64 5.4.0-6ubuntu1~16.04.5 [264 kB]
-    Get:18 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 liblsan0 amd64 5.4.0-6ubuntu1~16.04.5 [105 kB]
-    Get:19 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libtsan0 amd64 5.4.0-6ubuntu1~16.04.5 [244 kB]
-    Get:20 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libubsan0 amd64 5.4.0-6ubuntu1~16.04.5 [95.3 kB]
-    Get:21 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libcilkrts5 amd64 5.4.0-6ubuntu1~16.04.5 [40.1 kB]
-    Get:22 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libmpx0 amd64 5.4.0-6ubuntu1~16.04.5 [9,786 B]
-    Get:23 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libquadmath0 amd64 5.4.0-6ubuntu1~16.04.5 [131 kB]
-    Get:24 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libgcc-5-dev amd64 5.4.0-6ubuntu1~16.04.5 [2,226 kB]
-    Get:25 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 gcc-5 amd64 5.4.0-6ubuntu1~16.04.5 [8,638 kB]
-    Get:26 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 gcc amd64 4:5.3.1-1ubuntu1 [5,244 B]
-    Get:27 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libc-dev-bin amd64 2.23-0ubuntu9 [68.6 kB]
-    Get:28 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 linux-libc-dev amd64 4.4.0-97.120 [839 kB]
-    Get:29 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libc6-dev amd64 2.23-0ubuntu9 [2,082 kB]
-    Get:30 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libltdl7 amd64 2.4.6-0.1 [38.3 kB]
-    Get:31 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libltdl-dev amd64 2.4.6-0.1 [162 kB]
-    Get:32 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libtool all 2.4.6-0.1 [193 kB]
+    ... {snip}
     Get:33 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 manpages-dev all 4.04-2 [2,048 kB]
     Fetched 32.1 MB in 4s (6,918 kB/s)
     Extracting templates from packages: 100%
@@ -996,103 +932,7 @@ Output (Git Bash CLI):
     Processing triggers for libc-bin (2.23-0ubuntu4) ...
     Selecting previously unselected package libmpc3:amd64.
     (Reading database ... 64290 files and directories currently installed.)
-    Preparing to unpack .../libmpc3_1.0.3-1_amd64.deb ...
-    Unpacking libmpc3:amd64 (1.0.3-1) ...
-    Preparing to unpack .../gcc-5-base_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking gcc-5-base:amd64 (5.4.0-6ubuntu1~16.04.5) over (5.4.0-6ubuntu1~16.04.4) ...
-    Setting up gcc-5-base:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    (Reading database ... 64295 files and directories currently installed.)
-    Preparing to unpack .../libstdc++6_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libstdc++6:amd64 (5.4.0-6ubuntu1~16.04.5) over (5.4.0-6ubuntu1~16.04.4) ...
-    Processing triggers for libc-bin (2.23-0ubuntu4) ...
-    Setting up libstdc++6:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Processing triggers for libc-bin (2.23-0ubuntu4) ...
-    Selecting previously unselected package m4.
-    (Reading database ... 64295 files and directories currently installed.)
-    Preparing to unpack .../archives/m4_1.4.17-5_amd64.deb ...
-    Unpacking m4 (1.4.17-5) ...
-    Selecting previously unselected package autoconf.
-    Preparing to unpack .../autoconf_2.69-9_all.deb ...
-    Unpacking autoconf (2.69-9) ...
-    Selecting previously unselected package autotools-dev.
-    Preparing to unpack .../autotools-dev_20150820.1_all.deb ...
-    Unpacking autotools-dev (20150820.1) ...
-    Selecting previously unselected package automake.
-    Preparing to unpack .../automake_1%3a1.15-4ubuntu1_all.deb ...
-    Unpacking automake (1:1.15-4ubuntu1) ...
-    Selecting previously unselected package binutils.
-    Preparing to unpack .../binutils_2.26.1-1ubuntu1~16.04.5_amd64.deb ...
-    Unpacking binutils (2.26.1-1ubuntu1~16.04.5) ...
-    Selecting previously unselected package libisl15:amd64.
-    Preparing to unpack .../libisl15_0.16.1-1_amd64.deb ...
-    Unpacking libisl15:amd64 (0.16.1-1) ...
-    Selecting previously unselected package cpp-5.
-    Preparing to unpack .../cpp-5_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking cpp-5 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package cpp.
-    Preparing to unpack .../cpp_4%3a5.3.1-1ubuntu1_amd64.deb ...
-    Unpacking cpp (4:5.3.1-1ubuntu1) ...
-    Selecting previously unselected package libcc1-0:amd64.
-    Preparing to unpack .../libcc1-0_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libcc1-0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libgomp1:amd64.
-    Preparing to unpack .../libgomp1_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libgomp1:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libitm1:amd64.
-    Preparing to unpack .../libitm1_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libitm1:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libatomic1:amd64.
-    Preparing to unpack .../libatomic1_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libatomic1:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libasan2:amd64.
-    Preparing to unpack .../libasan2_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libasan2:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package liblsan0:amd64.
-    Preparing to unpack .../liblsan0_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking liblsan0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libtsan0:amd64.
-    Preparing to unpack .../libtsan0_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libtsan0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libubsan0:amd64.
-    Preparing to unpack .../libubsan0_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libubsan0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libcilkrts5:amd64.
-    Preparing to unpack .../libcilkrts5_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libcilkrts5:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libmpx0:amd64.
-    Preparing to unpack .../libmpx0_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libmpx0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libquadmath0:amd64.
-    Preparing to unpack .../libquadmath0_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libquadmath0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package libgcc-5-dev:amd64.
-    Preparing to unpack .../libgcc-5-dev_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking libgcc-5-dev:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package gcc-5.
-    Preparing to unpack .../gcc-5_5.4.0-6ubuntu1~16.04.5_amd64.deb ...
-    Unpacking gcc-5 (5.4.0-6ubuntu1~16.04.5) ...
-    Selecting previously unselected package gcc.
-    Preparing to unpack .../gcc_4%3a5.3.1-1ubuntu1_amd64.deb ...
-    Unpacking gcc (4:5.3.1-1ubuntu1) ...
-    Selecting previously unselected package libc-dev-bin.
-    Preparing to unpack .../libc-dev-bin_2.23-0ubuntu9_amd64.deb ...
-    Unpacking libc-dev-bin (2.23-0ubuntu9) ...
-    Selecting previously unselected package linux-libc-dev:amd64.
-    Preparing to unpack .../linux-libc-dev_4.4.0-97.120_amd64.deb ...
-    Unpacking linux-libc-dev:amd64 (4.4.0-97.120) ...
-    Selecting previously unselected package libc6-dev:amd64.
-    Preparing to unpack .../libc6-dev_2.23-0ubuntu9_amd64.deb ...
-    Unpacking libc6-dev:amd64 (2.23-0ubuntu9) ...
-    Selecting previously unselected package libltdl7:amd64.
-    Preparing to unpack .../libltdl7_2.4.6-0.1_amd64.deb ...
-    Unpacking libltdl7:amd64 (2.4.6-0.1) ...
-    Selecting previously unselected package libltdl-dev:amd64.
-    Preparing to unpack .../libltdl-dev_2.4.6-0.1_amd64.deb ...
-    Unpacking libltdl-dev:amd64 (2.4.6-0.1) ...
-    Selecting previously unselected package libtool.
-    Preparing to unpack .../libtool_2.4.6-0.1_all.deb ...
-    Unpacking libtool (2.4.6-0.1) ...
-    Selecting previously unselected package manpages-dev.
+    ...{snip}
     Preparing to unpack .../manpages-dev_4.04-2_all.deb ...
     Unpacking manpages-dev (4.04-2) ...
     Processing triggers for install-info (6.1.0.dfsg.1-5) ...
@@ -1105,29 +945,7 @@ Output (Git Bash CLI):
     Setting up automake (1:1.15-4ubuntu1) ...
     update-alternatives: using /usr/bin/automake-1.15 to provide /usr/bin/automake (automake) in auto mode
     Setting up binutils (2.26.1-1ubuntu1~16.04.5) ...
-    Setting up libisl15:amd64 (0.16.1-1) ...
-    Setting up cpp-5 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up cpp (4:5.3.1-1ubuntu1) ...
-    Setting up libcc1-0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libgomp1:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libitm1:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libatomic1:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libasan2:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up liblsan0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libtsan0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libubsan0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libcilkrts5:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libmpx0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libquadmath0:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up libgcc-5-dev:amd64 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up gcc-5 (5.4.0-6ubuntu1~16.04.5) ...
-    Setting up gcc (4:5.3.1-1ubuntu1) ...
-    Setting up libc-dev-bin (2.23-0ubuntu9) ...
-    Setting up linux-libc-dev:amd64 (4.4.0-97.120) ...
-    Setting up libc6-dev:amd64 (2.23-0ubuntu9) ...
-    Setting up libltdl7:amd64 (2.4.6-0.1) ...
-    Setting up libltdl-dev:amd64 (2.4.6-0.1) ...
-    Setting up libtool (2.4.6-0.1) ...
+    ...{snip}
     Setting up manpages-dev (4.04-2) ...
     Processing triggers for libc-bin (2.23-0ubuntu4) ...
     azureuser@myvm:~$
@@ -1137,7 +955,7 @@ Step (7): Install other Mesos dependencies.
 
     $ sudo apt-get -y install build-essential python-dev python-six python-virtualenv libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
 
-Output (Git Bash CLI):
+Output - Git Bash CLI (truncated):
 
     azureuser@myvm:~$ sudo apt-get -y install build-essential python-dev python-six python-virtualenv libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
     Reading package lists... Done
@@ -1149,60 +967,7 @@ Output (Git Bash CLI):
       libalgorithm-merge-perl libaopalliance-java libapache-pom-java libapr1 libaprutil1 libaprutil1-dev
       libasm4-java libatinject-jsr330-api-java libbsh-java libcdi-api-java libcglib3-java libclassworlds-java
       libcommons-cli-java libcommons-codec-java libcommons-httpclient-java libcommons-io-java libcommons-lang-java
-      libcommons-lang3-java libcommons-logging-java libcommons-net-java libcommons-net2-java
-      libcommons-parent-java libcurl3-nss libdom4j-java libdoxia-core-java libdpkg-perl libeasymock-java
-      libeclipse-aether-java libexpat1 libexpat1-dev libfakeroot libfile-fcntllock-perl
-      libgeronimo-interceptor-3.0-spec-java libguava-java libguice-java libhamcrest-java libhttpclient-java
-      libhttpcore-java libjaxen-java libjaxp1.3-java libjdom1-java libjetty-java libjsch-java libjsoup-java
-      libjsr305-java libldap-2.4-2 libldap2-dev liblog4j1.2-java libmaven-parent-java libmaven2-core-java
-      libmaven3-core-java libobjenesis-java libplexus-ant-factory-java libplexus-archiver-java
-      libplexus-bsh-factory-java libplexus-cipher-java libplexus-classworlds-java libplexus-classworlds2-java
-      libplexus-cli-java libplexus-component-annotations-java libplexus-component-metadata-java
-      libplexus-container-default-java libplexus-container-default1.5-java libplexus-containers-java
-      libplexus-containers1.5-java libplexus-interactivity-api-java libplexus-interpolation-java libplexus-io-java
-      libplexus-sec-dispatcher-java libplexus-utils-java libplexus-utils2-java libpython-dev libpython2.7
-      libpython2.7-dev libpython2.7-minimal libpython2.7-stdlib libqdox2-java libsctp-dev libsctp1 libserf-1-1
-      libservlet2.5-java libservlet3.1-java libsisu-inject-java libsisu-plexus-java libslf4j-java libstdc++-5-dev
-      libsvn1 libuuid1 libwagon-java libwagon2-java libxalan2-java libxbean-java libxerces2-java
-      libxml-commons-external-java libxml-commons-resolver1.1-java libxom-java libxpp2-java libxpp3-java make
-      python-pip-whl python-pkg-resources python2.7 python2.7-dev python2.7-minimal python3-virtualenv uuid-dev
-      virtualenv zlib1g
-    Suggested packages:
-      ant-doc ant-gcj ant-optional-gcj antlr javacc jython libbcel-java libbsf-java libgnumail-java
-      libjdepend-java liboro-java libregexp-java debian-keyring g++-multilib g++-5-multilib gcc-5-doc
-      libstdc++6-5-dbg junit-doc libaopalliance-java-doc libatinject-jsr330-api-java-doc libclassworlds-java-doc
-      libcommons-httpclient-java-doc libcommons-io-java-doc libcommons-lang-java-doc libcommons-lang3-java-doc
-      libavalon-framework-java libcommons-logging-java-doc libexcalibur-logkit-java libcommons-net-java-doc
-      libcommons-net2-java-doc libcurl4-doc libcurl3-dbg libidn11-dev libkrb5-dev libnss3-dev librtmp-dev
-      pkg-config libdom4j-java-doc libeasymock-java-doc libcglib-java libjaxp1.3-java-gcj libjdom1-java-doc jetty
-      libjetty-java-doc libjsoup-java-doc libjsr305-java-doc liblog4j1.2-java-doc libobjenesis-java-doc
-      libplexus-cipher-java-doc libplexus-classworlds-java-doc libplexus-classworlds2-java-doc
-      libplexus-cli-java-doc libplexus-container-default-java-doc libplexus-interactivity-api-java-doc
-      libplexus-interpolation-java-doc libplexus-sec-dispatcher-java-doc libplexus-utils-java-doc
-      libplexus-utils2-java-doc libqdox2-java-doc lksctp-tools testng libstdc++-5-doc libserf-dev libsvn-doc
-      libwagon-java-doc libxalan2-java-doc libxsltc-java groovy2 libequinox-osgi-java libosgi-compendium-java
-      libosgi-core-java libqdox-java libspring-beans-java libspring-context-java libspring-core-java
-      libspring-web-java libxerces2-java-doc libxerces2-java-gcj libxml-commons-resolver1.1-java-doc
-      libxom-java-doc make-doc python-setuptools python2.7-doc binfmt-support
-    The following NEW packages will be installed:
-      ant ant-optional build-essential dpkg-dev fakeroot g++ g++-5 junit junit4 libalgorithm-diff-perl
-      libalgorithm-diff-xs-perl libalgorithm-merge-perl libaopalliance-java libapache-pom-java libapr1 libapr1-dev
-      libaprutil1 libaprutil1-dev libasm4-java libatinject-jsr330-api-java libbsh-java libcdi-api-java
-      libcglib3-java libclassworlds-java libcommons-cli-java libcommons-codec-java libcommons-httpclient-java
-      libcommons-io-java libcommons-lang-java libcommons-lang3-java libcommons-logging-java libcommons-net-java
-      libcommons-net2-java libcommons-parent-java libcurl3-nss libcurl4-nss-dev libdom4j-java libdoxia-core-java
-      libdpkg-perl libeasymock-java libeclipse-aether-java libexpat1-dev libfakeroot libfile-fcntllock-perl
-      libgeronimo-interceptor-3.0-spec-java libguava-java libguice-java libhamcrest-java libhttpclient-java
-      libhttpcore-java libjaxen-java libjaxp1.3-java libjdom1-java libjetty-java libjsch-java libjsoup-java
-      libjsr305-java libldap2-dev liblog4j1.2-java libmaven-parent-java libmaven2-core-java libmaven3-core-java
-      libobjenesis-java libplexus-ant-factory-java libplexus-archiver-java libplexus-bsh-factory-java
-      libplexus-cipher-java libplexus-classworlds-java libplexus-classworlds2-java libplexus-cli-java
-      libplexus-component-annotations-java libplexus-component-metadata-java libplexus-container-default-java
-      libplexus-container-default1.5-java libplexus-containers-java libplexus-containers1.5-java
-      libplexus-interactivity-api-java libplexus-interpolation-java libplexus-io-java
-      libplexus-sec-dispatcher-java libplexus-utils-java libplexus-utils2-java libpython-dev libpython2.7-dev
-      libqdox2-java libsasl2-dev libsctp-dev libsctp1 libserf-1-1 libservlet2.5-java libservlet3.1-java
-      libsisu-inject-java libsisu-plexus-java libslf4j-java libstdc++-5-dev libsvn-dev libsvn1 libwagon-java
+    ...{snip}
       libwagon2-java libxalan2-java libxbean-java libxerces2-java libxml-commons-external-java
       libxml-commons-resolver1.1-java libxom-java libxpp2-java libxpp3-java make maven python-dev python-pip-whl
       python-pkg-resources python-six python-virtualenv python2.7-dev python3-virtualenv uuid-dev virtualenv
@@ -1218,9 +983,7 @@ Output (Git Bash CLI):
     Get:3 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 libexpat1 amd64 2.1.0-7ubuntu0.16.04.3 [71.2 kB]
     Get:4 <http://azure.archive.ubuntu.com/ubuntu xenial/main> amd64 libaprutil1 amd64 1.5.4-1build1 [77.1 kB]
     Get:5 <http://azure.archive.ubuntu.com/ubuntu xenial-updates/main> amd64 zlib1g amd64 1:1.2.8.dfsg-2ubuntu4.1 [51.2 kB]
-
-    ...
-
+    ...{snip}
     Setting up python2.7-dev (2.7.12-1ubuntu0~16.04.1) ...
     Setting up python-dev (2.7.11-1) ...
     Setting up python-pip-whl (8.1.1-2ubuntu0.4) ...
@@ -1237,15 +1000,15 @@ Output (Git Bash CLI):
 
 Step (8): Building Mesos (Posix)
 
-# Change working directory.
+Change working directory.
 
     $ cd mesos
 
-# Bootstrap (Only required if building from git repository).
+Bootstrap (Only required if building from git repository).
 
     $ ./bootstrap
 
-Output (Git Bash CLI):
+Output - Git Bash CLI (truncated):
 
     azureuser@myvm:~/mesos$ ./bootstrap
     autoreconf: Entering directory `.'
@@ -1260,12 +1023,7 @@ Output (Git Bash CLI):
     configure.ac:2054: the top level
     autoreconf: running: libtoolize --copy
     libtoolize: putting auxiliary files in '.'.
-    libtoolize: copying file './ltmain.sh'
-    libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
-    libtoolize: copying file 'm4/libtool.m4'
-    libtoolize: copying file 'm4/ltoptions.m4'
-    libtoolize: copying file 'm4/ltsugar.m4'
-    libtoolize: copying file 'm4/ltversion.m4'
+    ...{snip}
     libtoolize: copying file 'm4/lt~obsolete.m4'
     autoreconf: running: /usr/bin/autoconf --warnings=all
     configure.ac:1471: warning: cannot check for file existence when cross compiling
@@ -1277,246 +1035,15 @@ Output (Git Bash CLI):
     autoreconf: configure.ac: not using Autoheader
     autoreconf: running: automake --add-missing --copy --no-force --warnings=all
     configure.ac:50: installing './ar-lib'
-    configure.ac:34: installing './compile'
-    configure.ac:24: installing './config.guess'
-    configure.ac:24: installing './config.sub'
-    configure.ac:46: installing './install-sh'
+    ...{snip}
     configure.ac:46: installing './missing'
     3rdparty/Makefile.am:246: warning: source file '$(HTTP_PARSER)/http_parser.c' is in a subdirectory,
     3rdparty/Makefile.am:246: but option 'subdir-objects' is disabled
     automake: warning: possible forward-incompatibility.
-    automake: At least a source file is in a subdirectory, but the 'subdir-objects'
-    automake: automake option hasn't been enabled.  For now, the corresponding output
-    automake: object file(s) will be placed in the top-level directory.  However,
-    automake: this behaviour will change in future Automake versions: they will
-    automake: unconditionally cause object files to be placed in the same subdirectory
-    automake: of the corresponding sources.
-    automake: You are advised to start using 'subdir-objects' option throughout your
+    ...{snip}
     automake: project, to avoid future incompatibilities.
     3rdparty/Makefile.am: installing './depcomp'
-    3rdparty/Makefile.am:208: warning: variable 'GLOG_LDFLAGS' is defined but no program or
-    3rdparty/Makefile.am:208: library has 'GLOG' as canonical name (possible typo)
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/authenticator_manager.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/authenticator.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/clock.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/firewall.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/help.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/http.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/io.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/latch.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/logging.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/metrics/metrics.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/mime.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/pid.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/poll_socket.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/profiler.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/process.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/reap.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/socket.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/subprocess.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/subprocess_posix.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/time.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:188: warning: source file 'src/timeseries.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:188: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:224: warning: source file 'src/jwt.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:224: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:224: warning: source file 'src/jwt_authenticator.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:224: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:224: warning: source file 'src/libevent_ssl_socket.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:224: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:224: warning: source file 'src/openssl.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:224: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:224: warning: source file 'src/ssl/utilities.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:224: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:255: warning: source file 'src/grpc.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:255: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:260: warning: source file 'src/libevent.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:260: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:260: warning: source file 'src/libevent_poll.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:260: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:265: warning: source file 'src/libev.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:265: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:265: warning: source file 'src/libev_poll.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:265: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:350: warning: source file 'src/tests/benchmarks.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:350: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/after_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/collect_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/count_down_latch_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/decoder_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/encoder_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/future_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/http_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/io_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/limiter_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/loop_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/main.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/metrics_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/mutex_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/owned_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/process_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/profiler_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/queue_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/reap_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/socket_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/sequence_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/shared_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/statistics_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/subprocess_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/system_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/timeseries_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:287: warning: source file 'src/tests/time_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:287: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:328: warning: source file 'src/tests/grpc_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:328: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:345: warning: source file 'src/tests/jwt_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:345: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:345: warning: source file 'src/tests/ssl_tests.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:345: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:341: warning: source file 'src/tests/ssl_client.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:341: but option 'subdir-objects' is disabled
-    3rdparty/libprocess/Makefile.am:371: warning: source file 'src/tests/test_linkee.cpp' is in a subdirectory,
-    3rdparty/libprocess/Makefile.am:371: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/adaptor_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/base64_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/bits_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/boundedhashmap_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/bytes_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/cache_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/duration_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/dynamiclibrary_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/error_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/flags_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/gzip_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/hashmap_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/hashset_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/interval_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/ip_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/json_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/jsonify_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/lambda_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/linkedhashmap_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/mac_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/main.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/multimap_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/none_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/numify_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/option_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/env_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/filesystem_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/process_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/rmdir_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/sendfile_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/signals_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/socket_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/strerror_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/os/systems_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/path_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/protobuf_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/recordio_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/result_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/some_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/strings_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/subcommand_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/svn_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/try_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/uuid_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/variant_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:128: warning: source file 'tests/version_tests.cpp' is in a subdirectory,
-    3rdparty/stout/Makefile.am:128: but option 'subdir-objects' is disabled
-    3rdparty/stout/Makefile.am:179: warning: source file 'tests/proc_tests.cpp' is in a subdirectory,
+    ...{snip}
     3rdparty/stout/Makefile.am:179: but option 'subdir-objects' is disabled
     autoreconf: Leaving directory `.'
     azureuser@myvm:~/mesos$
@@ -1541,172 +1068,7 @@ Output (Git Bash CLI):
     checking build system type... x86_64-pc-linux-gnu
     checking host system type... x86_64-pc-linux-gnu
     checking target system type... x86_64-pc-linux-gnu
-    checking for g++... g++
-    checking whether the C++ compiler works... yes
-    checking for C++ compiler default output file name... a.out
-    checking for suffix of executables...
-    checking whether we are cross compiling... no
-    checking for suffix of object files... o
-    checking whether we are using the GNU C++ compiler... yes
-    checking whether g++ accepts -g... yes
-    checking for gcc... gcc
-    checking whether we are using the GNU C compiler... yes
-    checking whether gcc accepts -g... yes
-    checking for gcc option to accept ISO C89... none needed
-    checking whether gcc understands -c and -o together... yes
-    checking whether ln -s works... yes
-    checking for C++ compiler vendor... gnu
-    checking for a sed that does not truncate output... /bin/sed
-    checking for C++ compiler version... 5.4.0
-    checking for C++ compiler vendor... (cached) gnu
-    checking for a BSD-compatible install... /usr/bin/install -c
-    checking whether build environment is sane... yes
-    checking for a thread-safe mkdir -p... /bin/mkdir -p
-    checking for gawk... gawk
-    checking whether make sets $(MAKE)... yes
-    checking for style of include used by make... GNU
-    checking whether make supports nested variables... yes
-    checking dependency style of gcc... gcc3
-    checking dependency style of g++... gcc3
-    checking whether to enable maintainer-specific portions of Makefiles... yes
-    checking for ar... ar
-    checking the archiver (ar) interface... ar
-    checking how to print strings... printf
-    checking for a sed that does not truncate output... (cached) /bin/sed
-    checking for grep that handles long lines and -e... /bin/grep
-    checking for egrep... /bin/grep -E
-    checking for fgrep... /bin/grep -F
-    checking for ld used by gcc... /usr/bin/ld
-    checking if the linker (/usr/bin/ld) is GNU ld... yes
-    checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
-    checking the name lister (/usr/bin/nm -B) interface... BSD nm
-    checking the maximum length of command line arguments... 1572864
-    checking how to convert x86_64-pc-linux-gnu file names to x86_64-pc-linux-gnu format... func_convert_file_noop
-    checking how to convert x86_64-pc-linux-gnu file names to toolchain format... func_convert_file_noop
-    checking for /usr/bin/ld option to reload object files... -r
-    checking for objdump... objdump
-    checking how to recognize dependent libraries... pass_all
-    checking for dlltool... no
-    checking how to associate runtime and link libraries... printf %s\n
-    checking for archiver @FILE support... @
-    checking for strip... strip
-    checking for ranlib... ranlib
-    checking command to parse /usr/bin/nm -B output from gcc object... ok
-    checking for sysroot... no
-    checking for a working dd... /bin/dd
-    checking how to truncate binary pipes... /bin/dd bs=4096 count=1
-    checking for mt... mt
-    checking if mt is a manifest tool... no
-    checking how to run the C preprocessor... gcc -E
-    checking for ANSI C header files... yes
-    checking for sys/types.h... yes
-    checking for sys/stat.h... yes
-    checking for stdlib.h... yes
-    checking for string.h... yes
-    checking for memory.h... yes
-    checking for strings.h... yes
-    checking for inttypes.h... yes
-    checking for stdint.h... yes
-    checking for unistd.h... yes
-    checking for dlfcn.h... yes
-    checking for objdir... .libs
-    checking if gcc supports -fno-rtti -fno-exceptions... no
-    checking for gcc option to produce PIC... -fPIC -DPIC
-    checking if gcc PIC flag -fPIC -DPIC works... yes
-    checking if gcc static flag -static works... yes
-    checking if gcc supports -c -o file.o... yes
-    checking if gcc supports -c -o file.o... (cached) yes
-    checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
-    checking whether -lc should be explicitly linked in... no
-    checking dynamic linker characteristics... GNU/Linux ld.so
-    checking how to hardcode library paths into programs... immediate
-    checking whether stripping libraries is possible... yes
-    checking if libtool supports shared libraries... yes
-    checking whether to build shared libraries... yes
-    checking whether to build static libraries... no
-    checking how to run the C++ preprocessor... g++ -E
-    checking for ld used by g++... /usr/bin/ld -m elf_x86_64
-    checking if the linker (/usr/bin/ld -m elf_x86_64) is GNU ld... yes
-    checking whether the g++ linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
-    checking for g++ option to produce PIC... -fPIC -DPIC
-    checking if g++ PIC flag -fPIC -DPIC works... yes
-    checking if g++ static flag -static works... yes
-    checking if g++ supports -c -o file.o... yes
-    checking if g++ supports -c -o file.o... (cached) yes
-    checking whether the g++ linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
-    checking dynamic linker characteristics... (cached) GNU/Linux ld.so
-    checking how to hardcode library paths into programs... immediate
-    configure: creating ./config.lt
-    config.lt: creating libtool
-    configure: Setting up CXXFLAGS for g++ version >= 4.8
-    checking whether C++ compiler accepts -fstack-protector-strong... yes
-    checking whether g++ supports C++11 features by default... no
-    checking whether g++ supports C++11 features with -std=c++11... yes
-    checking if compiler needs -Werror to reject unknown flags... no
-    checking for the pthreads library -lpthreads... no
-    checking whether pthreads work without any flags... no
-    checking whether pthreads work with -Kthread... no
-    checking whether pthreads work with -kthread... no
-    checking for the pthreads library -llthread... no
-    checking whether pthreads work with -pthread... yes
-    checking for joinable pthread attribute... PTHREAD_CREATE_JOINABLE
-    checking if more special flags are required for pthreads... no
-    checking for PTHREAD_PRIO_INHERIT... yes
-    configure: Setting up build environment for x86_64 linux-gnu
-    checking for backtrace in -lunwind... no
-    checking for main in -lgflags... no
-    checking for patch... patch
-    checking fts.h usability... yes
-    checking fts.h presence... yes
-    checking for fts.h... yes
-    checking for library containing fts_close... none required
-    checking apr_pools.h usability... yes
-    checking apr_pools.h presence... yes
-    checking for apr_pools.h... yes
-    checking for apr_initialize in -lapr-1... yes
-    checking for curl_global_init in -lcurl... yes
-    checking for javac... /usr/bin/javac
-    checking for java... /usr/bin/java
-    checking value of Java system property 'java.home'... /usr/lib/jvm/java-8-openjdk-amd64/jre
-    configure: using JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-    checking whether or not we can build with JNI... yes
-    checking for mvn... /usr/bin/mvn
-    checking for sasl_done in -lsasl2... yes
-    checking SASL CRAM-MD5 support... yes
-    checking for RAND_poll in -lcrypto... no
-    checking openssl/ssl.h usability... no
-    checking openssl/ssl.h presence... no
-    checking for openssl/ssl.h... no
-    checking svn_version.h usability... yes
-    checking svn_version.h presence... yes
-    checking for svn_version.h... yes
-    checking for svn_stringbuf_create_ensure in -lsvn_subr-1... yes
-    checking svn_delta.h usability... yes
-    checking svn_delta.h presence... yes
-    checking for svn_delta.h... yes
-    checking for svn_txdelta in -lsvn_delta-1... yes
-    checking whether to enable the XFS disk isolator... no
-    checking zlib.h usability... yes
-    checking zlib.h presence... yes
-    checking for zlib.h... yes
-    checking for deflate, gzread, gzwrite, inflate in -lz... yes
-    checking C++ standard library for undefined behaviour with selected optimization level... no
-    checking for a Python interpreter with version >= 2.6... python
-    checking for python... /usr/bin/python
-    checking for python version... 2.7
-    checking for python platform... linux2
-    checking for python script directory... ${prefix}/lib/python2.7/site-packages
-    checking for python extension module directory... ${exec_prefix}/lib/python2.7/site-packages
-    checking for python2.7... (cached) /usr/bin/python
-    checking for a version of Python >= '2.1.0'... yes
-    checking for a version of Python >= '2.6'... yes
-    checking for the distutils Python package... yes
-    checking for Python include path... -I/usr/include/python2.7
-    checking for Python library path... -L/usr/lib -lpython2.7
-    checking for Python site-packages path... /usr/lib/python2.7/dist-packages
-    checking python extra libraries... -lpthread -ldl  -lutil -lm
-    checking python extra linking flags... -Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions
-    checking consistency of all components of python development environment... yes
+    ...{snip}
     checking whether we can build usable Python eggs... cc1plus: warning: command line option '-Wstrict-prototypes' is valid for C/ObjC but not for C++
     yes
     checking for an old installation of the Mesos egg (before 0.20.0)... no
@@ -1716,68 +1078,7 @@ Output (Git Bash CLI):
     config.status: creating mesos.pc
     config.status: creating src/Makefile
     config.status: creating 3rdparty/Makefile
-    config.status: creating 3rdparty/libprocess/Makefile
-    config.status: creating 3rdparty/libprocess/include/Makefile
-    config.status: creating 3rdparty/stout/Makefile
-    config.status: creating 3rdparty/stout/include/Makefile
-    config.status: creating 3rdparty/gmock_sources.cc
-    config.status: creating bin/mesos.sh
-    config.status: creating bin/mesos-agent.sh
-    config.status: creating bin/mesos-local.sh
-    config.status: creating bin/mesos-master.sh
-    config.status: creating bin/mesos-slave.sh
-    config.status: creating bin/mesos-tests.sh
-    config.status: creating bin/mesos-agent-flags.sh
-    config.status: creating bin/mesos-local-flags.sh
-    config.status: creating bin/mesos-master-flags.sh
-    config.status: creating bin/mesos-slave-flags.sh
-    config.status: creating bin/mesos-tests-flags.sh
-    config.status: creating bin/gdb-mesos-agent.sh
-    config.status: creating bin/gdb-mesos-local.sh
-    config.status: creating bin/gdb-mesos-master.sh
-    config.status: creating bin/gdb-mesos-slave.sh
-    config.status: creating bin/gdb-mesos-tests.sh
-    config.status: creating bin/lldb-mesos-agent.sh
-    config.status: creating bin/lldb-mesos-local.sh
-    config.status: creating bin/lldb-mesos-master.sh
-    config.status: creating bin/lldb-mesos-slave.sh
-    config.status: creating bin/lldb-mesos-tests.sh
-    config.status: creating bin/valgrind-mesos-agent.sh
-    config.status: creating bin/valgrind-mesos-local.sh
-    config.status: creating bin/valgrind-mesos-master.sh
-    config.status: creating bin/valgrind-mesos-slave.sh
-    config.status: creating bin/valgrind-mesos-tests.sh
-    config.status: creating src/deploy/mesos-daemon.sh
-    config.status: creating src/deploy/mesos-start-agents.sh
-    config.status: creating src/deploy/mesos-start-cluster.sh
-    config.status: creating src/deploy/mesos-start-masters.sh
-    config.status: creating src/deploy/mesos-start-slaves.sh
-    config.status: creating src/deploy/mesos-stop-agents.sh
-    config.status: creating src/deploy/mesos-stop-cluster.sh
-    config.status: creating src/deploy/mesos-stop-masters.sh
-    config.status: creating src/deploy/mesos-stop-slaves.sh
-    config.status: creating include/mesos/version.hpp
-    config.status: creating src/java/generated/org/apache/mesos/MesosNativeLibrary.java
-    config.status: creating mpi/mpiexec-mesos
-    config.status: creating src/examples/java/test-exception-framework
-    config.status: creating src/examples/java/test-executor
-    config.status: creating src/examples/java/test-framework
-    config.status: creating src/examples/java/test-multiple-executors-framework
-    config.status: creating src/examples/java/test-log
-    config.status: creating src/examples/java/v1-test-framework
-    config.status: creating src/java/mesos.pom
-    config.status: creating src/examples/python/test-executor
-    config.status: creating src/examples/python/test-framework
-    config.status: creating src/python/setup.py
-    config.status: creating src/python/cli/setup.py
-    config.status: creating src/python/interface/setup.py
-    config.status: creating src/python/native_common/ext_modules.py
-    config.status: creating src/python/executor/setup.py
-    config.status: creating src/python/native/setup.py
-    config.status: creating src/python/scheduler/setup.py
-    config.status: linking src/python/native_common/ext_modules.py to src/python/executor/ext_modules.py
-    config.status: linking src/python/native_common/ext_modules.py to src/python/scheduler/ext_modules.py
-    config.status: executing depfiles commands
+    ...{snip}
     config.status: executing libtool commands
     configure: Build option summary:
         CXX:        g++
