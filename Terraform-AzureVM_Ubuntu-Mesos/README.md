@@ -1,19 +1,12 @@
 This is a Terraform sample demo lab to create a complete Linux virtual machine and other related resources in Azure with Terraform, which includes the following ARM resources:
 
     - Azure connection 
-    
     - Resource group
-    
     - Virtual network
-    
     - Public IP address
-    
     - Network Security Group
-    
     - Virtual network interface card
-    
     - Storage account for diagnostics
-    
     - Virtual machine
 
 The "azurerm_virtual_machine" Azure provider for Terraform is used to express infrastructure-as-code, and to deploy Azure Virtual Machine instance and other related ARM resources.  In this demo lab, Terraform Microsoft AzureRM Provider will interact with the Azure Resource Manager resources via the AzureRM API's. Prior to any Azure resource deployment, the Azure provider for Terraform needs to be configured with the credentials needed to generate OAuth tokens for the AzureRM API's.
@@ -53,53 +46,30 @@ Output:
     started with Terraform, stick with the common commands. For the other commands, please read the help and docs before usage.
 
     Common commands:
-
         apply              Builds or changes infrastructure
-
         console            Interactive console for Terraform interpolations
-
         destroy            Destroy Terraform-managed infrastructure
-
         env                Workspace management
-
         fmt                Rewrites config files to canonical format
-
         get                Download and install modules for the configuration
-
         graph              Create a visual graph of Terraform resources
-
         import             Import existing infrastructure into Terraform
-
         init               Initialize a Terraform working directory
-
         output             Read an output from a state file
-
         plan               Generate and show an execution plan
-
         providers          Prints a tree of the providers used in the configuration
-
         push               Upload this Terraform module to Atlas to run
-
         refresh            Update local state file against real resources
-
         show               Inspect Terraform state or plan
-
         taint              Manually mark a resource for recreation
-
         untaint            Manually unmark a resource as tainted
-
         validate           Validates the Terraform files
-
         version            Prints the Terraform version
-
         workspace          Workspace management
 
     All other commands:
-
         debug              Debug output management (experimental)
-
         force-unlock       Manually unlock the terraform state
-
         state              Advanced state management
 
     Usage: terraform [--version] [--help] <command> [args]
@@ -191,25 +161,17 @@ Step (8): Set environment variables (optional)
 After you create and configure an Azure AD service principal, you need to let Terraform know the tenant ID, subscription ID, client ID, and client secret to use. You can do it by embedding those values in your Terraform scripts, as described in Create basic infrastructure by using Terraform. Alternately, you can set the following environment variables (and thus avoid accidentally checking in or sharing your credentials):+
 
     ARM_SUBSCRIPTION_ID
-
     ARM_CLIENT_ID
-
     ARM_CLIENT_SECRET
-
     ARM_TENANT_ID
 
 Sample shell script to set those variables:
 
     #!/bin/sh
-
     echo "Setting environment variables for Terraform"
-
     export ARM_SUBSCRIPTION_ID=your_subscription_id
-
     export ARM_CLIENT_ID=your_appId
-
     export ARM_CLIENT_SECRET=your_password
-
     export ARM_TENANT_ID=your_tenant_id
 
 Step (9): Create a tf script to be used directly by Terrform to deploy a complete Azure VM and other related sources.
@@ -405,6 +367,7 @@ Set OSDisk=Standard LRS
     $ terraform init
 
 Output:
+
     C:\>terraform init
 
     Initializing provider plugins...
@@ -441,6 +404,7 @@ This step compares the requested resources to the state information saved by Ter
     $ terraform plan
 
 Output:
+
     C:\>terraform plan
 
     There are warnings related to your configuration. If no errors occurred, Terraform will continue despite these warnings. It is a good idea to resolve these warnings in the near future.
@@ -460,6 +424,7 @@ Step (3): Terraform Plan
     $ terraform plan
 
 Output:
+
     $ C:\>terraform plan
     Refreshing Terraform state in-memory prior to plan...
     The refreshed state will be used to calculate this plan, but will not be
@@ -631,6 +596,7 @@ Step (4): Build the complete Azure VM infrastructure in Azure, apply the templat
     $ terraform apply
 
 Output:
+
     C:\>terraform apply
     azurerm_resource_group.myterraform: Refreshing state... (ID: /subscriptions/327{...}a2818d4/resourceGroups/myResourceGroup)
     azurerm_network_security_group.myterraformnsg: Refreshing state... (ID: /subscriptions/327...}kSecurityGroups/myNetworkSecurityGroup)
@@ -694,6 +660,7 @@ Step (5): Obtain the public IP address of your VM with az vm show
     $ az vm show --resource-group myResourceGroup --name myVM -d --query [publicIps] --o tsv
 
 Output:
+
     C:\>az vm show --resource-group myResourceGroup --name myVM -d --query [publicIps] --o tsv
 
     52.179.14.5
@@ -704,6 +671,7 @@ Step (6): SSH into the VM using Git Bash CLI to install Mesos on Ubuntu
     $ ssh azureuser@<publicIps>
 
 Output (Git Bash CLI):
+
     {snip}@{snip} MINGW64 /c/demo/Terraform
     $ ssh azureuser@52.{...}.14.5
     The authenticity of host '52.{...}.5 (52.{...}.14.5)' can't be established.
@@ -746,6 +714,7 @@ Download latest stable Mesos release from Apache and extract tar file
     $ tar -zxf mesos-1.4.0.tar.gz
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~$ wget http://www.apache.org/dist/mesos/1.4.0/mesos-1.4.0.tar.gz
     --2017-10-19 03:52:59--  http://www.apache.org/dist/mesos/1.4.0/mesos-1.4.0.tar.gz
     Resolving www.apache.org (www.apache.org)... 140.211.11.105
@@ -767,6 +736,7 @@ Step (2): Clone the Mesos git repository
     $ git clone https://git-wip-us.apache.org/repos/asf/mesos.git
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~$ git clone https://git-wip-us.apache.org/repos/asf/mesos.git
     Cloning into 'mesos'...
     remote: Counting objects: 129874, done.
@@ -788,6 +758,7 @@ Step (3): Update the packages.
     $ sudo apt-get update
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~$ sudo apt-get update
     Get:1 http://security.ubuntu.com/ubuntu xenial-security InRelease [102 kB]
     Hit:2 http://azure.archive.ubuntu.com/ubuntu xenial InRelease
@@ -836,6 +807,7 @@ Step (4): Install a few utility tools.
     $ sudo apt-get install -y tar wget git
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~$ sudo apt-get install -y tar wget git
     Reading package lists... Done
     Building dependency tree
@@ -875,6 +847,7 @@ step (5): Install the latest OpenJDK.
     $ sudo apt-get install -y openjdk-8-jdk
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~$ sudo apt-get install -y openjdk-8-jdk
     Reading package lists... Done
     Building dependency tree
@@ -953,6 +926,7 @@ Step (6): Install autotools (Only necessary if building from git repository).
     $ sudo apt-get install -y autoconf libtool
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~$ sudo apt-get install -y autoconf libtool
     Reading package lists... Done
     Building dependency tree
@@ -1160,6 +1134,7 @@ Step (7): Install other Mesos dependencies.
     $ sudo apt-get -y install build-essential python-dev python-six python-virtualenv libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~$ sudo apt-get -y install build-essential python-dev python-six python-virtualenv libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev
     Reading package lists... Done
     Building dependency tree
@@ -1257,13 +1232,17 @@ Output (Git Bash CLI):
 
 
 Step (8): Building Mesos (Posix)
+
 # Change working directory.
+
     $ cd mesos
 
 # Bootstrap (Only required if building from git repository).
+
     $ ./bootstrap
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~/mesos$ ./bootstrap
     autoreconf: Entering directory `.'
     autoreconf: configure.ac: not using Gettext
@@ -1545,6 +1524,7 @@ Step (8): Configure and build.
     $ cd build
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~/mesos$ mkdir build
     azureuser@myvm:~/mesos$ cd build
     azureuser@myvm:~/mesos/build$
@@ -1552,6 +1532,7 @@ Output (Git Bash CLI):
 $ ../configure
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~/mesos/build$ ../configure
     checking build system type... x86_64-pc-linux-gnu
     checking host system type... x86_64-pc-linux-gnu
@@ -1810,6 +1791,7 @@ In order to speed up the build and reduce verbosity of the logs, you can append 
     $ make
 
 Output (Git Bash CLI):
+
     azureuser@myvm:~/mesos/build$make
  
 ********
