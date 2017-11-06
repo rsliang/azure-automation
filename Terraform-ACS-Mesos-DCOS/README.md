@@ -10,17 +10,17 @@ I. Install Terraform
 *************************
 Step (1): Download and unzip Terraform zip archive package for Windows, Linux or Mac
 
-https://www.terraform.io/downloads.html
+    https://www.terraform.io/downloads.html
 
 Step (2): Add Terraform executable to the Path
 
-Make sure terraform binary is available on the PATH.
+    Make sure terraform binary is available on the PATH.
 
 Step (3): Verify Terraform install and patth configuration
 
-$ terraform.exe
+    $ terraform.exe
 
-Usage: terraform [--version] [--help] <command> [args]
+    Usage: terraform [--version] [--help] <command> [args]
 
 Output:
 
@@ -93,11 +93,11 @@ Output:
 Step (4): Set up Terraform access to Azure
 To enable Terraform to provision resources into Azure, you need to create two entities in Azure Active Directory (Azure AD): an Azure AD application and an Azure AD service principal.  The service principal grants your Terraform scripts using credentials to provision resources in your Azure subscription.
 
-Azure env setup: provider.azurerm
+    Azure env setup: provider.azurerm
 
-Run `az login` to obtain Azure CLI Auth Tokens 
+    Run `az login` to obtain Azure CLI Auth Tokens 
 
-$ az login
+    $ az login
 
 Output:
 
@@ -131,7 +131,7 @@ Step (6): (Optional) Set subscription ID for the sesssion
 
 Set the SUBSCRIPTION_ID environment variable to hold the value of the returned id field from the subscription you want to use if you have multiple Azure subscriptions.
 
-$ az account set --subscription="${SUBSCRIPTION_ID}"
+    $ az account set --subscription="${SUBSCRIPTION_ID}"
 
 Output:
 
@@ -141,7 +141,7 @@ Output:
 
 Step (6): Query account for subscription ID and tenant ID:
 
-$ az account show --query "{subscriptionId:id, tenantId:tenantId}"
+    $ az account show --query "{subscriptionId:id, tenantId:tenantId}"
 
 Output:
 
@@ -153,7 +153,7 @@ Output:
 
 Step (7): Create separate credential for Terraform
 
-$ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
+    $ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${SUBSCRIPTION_ID}"
 
 Output:
 
@@ -252,7 +252,7 @@ Step (1): Initialize Terraform - run terraform init
 
 This command downloads the Azure modules required specified in the *.tf file.
 
-$ terraform init
+    $ terraform init
 
 Output:
 
@@ -282,7 +282,7 @@ Step (2): Terraform review and validate the template - preview the tf script wit
 
 This step compares the requested resources to the state information saved by Terraform and then outputs the planned execution. Resources are not created in Azure.
 
-$ terraform plan
+    $ terraform plan
 
 Output:
 
@@ -362,7 +362,9 @@ Output:
 
 Step (3): Build the infrastructure in Azure, apply the template in Terraform
 
-$ terraform apply - run terraform apply to create resources specified in the tf script 
+Run terraform apply to create resources specified in the tf script.
+
+    $ terraform apply
 
 Output:
 
@@ -444,19 +446,19 @@ You have installed Terraform and configured Azure credentials so that you can st
  ********************
  Terraform Resources:
  ********************
- Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
+    Terraform azurerm_container_service: https://www.terraform.io/docs/providers/azurerm/r/container_service.html
  
  Gettring Started with Terraform: 
  
- Instroduction: https://www.terraform.io/intro/index.html
- 
- Install Terraform: https://www.terraform.io/intro/getting-started/install.html
- 
- Build Infrastructure: https://www.terraform.io/intro/getting-started/build.html
- 
- Provision: https://www.terraform.io/intro/getting-started/provision.html
- 
- Change Infrastructure: https://www.terraform.io/intro/getting-started/change.html
- 
- Destroy Infrastructure: https://www.terraform.io/intro/getting-started/destroy.html
+     Instroduction: https://www.terraform.io/intro/index.html
+
+     Install Terraform: https://www.terraform.io/intro/getting-started/install.html
+
+     Build Infrastructure: https://www.terraform.io/intro/getting-started/build.html
+
+     Provision: https://www.terraform.io/intro/getting-started/provision.html
+
+     Change Infrastructure: https://www.terraform.io/intro/getting-started/change.html
+
+     Destroy Infrastructure: https://www.terraform.io/intro/getting-started/destroy.html
  
